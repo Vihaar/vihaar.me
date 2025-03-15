@@ -66,7 +66,7 @@ const Navbar: React.FC = () => {
               key={link.title}
               href={link.href}
               onClick={(e) => handleNavClick(e, link.href)}
-              className="magnetic-button font-medium text-foreground/80 hover:text-foreground transition-colors"
+              className="font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
               {link.title}
             </a>
@@ -78,7 +78,7 @@ const Navbar: React.FC = () => {
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
-            className="magnetic-button rounded-full"
+            className="rounded-full"
             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
           >
             {theme === "dark" ? (

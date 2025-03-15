@@ -16,6 +16,7 @@ const Index: React.FC = () => {
     
     // Force light mode
     document.documentElement.classList.remove("dark");
+    document.documentElement.classList.add("light");
     localStorage.setItem("vihaar-theme", "light");
   }, []);
 
