@@ -26,7 +26,7 @@ const ToolCard: React.FC<ToolCardProps> = ({
   return (
     <Card className="group overflow-hidden h-full transition-all duration-300 hover:shadow-lg hover:scale-[1.01] border-border hover:border-primary/20">
       <CardHeader className="relative pb-0">
-        <div className="absolute top-4 right-4 flex space-x-2">
+        <div className="absolute top-4 right-4 flex flex-wrap gap-2">
           {tags.map((tag) => (
             <Badge key={tag} variant="secondary" className="text-xs font-medium">
               {tag}

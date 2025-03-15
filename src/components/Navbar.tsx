@@ -2,7 +2,7 @@
 import React from "react";
 import { useTheme } from "./ThemeProvider";
 import { Button } from "@/components/ui/button";
-import { Sun, Moon, Menu, X } from "lucide-react";
+import { Sun, Moon, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
@@ -12,10 +12,10 @@ interface NavLink {
 }
 
 const navLinks: NavLink[] = [
-  { title: "Home", href: "/" },
-  { title: "Tools", href: "/tools" },
-  { title: "About", href: "/about" },
-  { title: "Contact", href: "/contact" },
+  { title: "Home", href: "#home" },
+  { title: "Tools", href: "#tools" },
+  { title: "About", href: "#about" },
+  { title: "Contact", href: "#contact" },
 ];
 
 const Navbar: React.FC = () => {
@@ -35,6 +35,14 @@ const Navbar: React.FC = () => {
     };
   }, []);
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <header
       className={cn(
@@ -45,7 +53,7 @@ const Navbar: React.FC = () => {
       )}
     >
       <div className="container flex items-center justify-between">
-        <a href="/" className="flex items-center space-x-2">
+        <a href="#home" className="flex items-center space-x-2" onClick={(e) => handleNavClick(e, "#home")}>
           <span className="font-heading text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
             vihaar.me
           </span>
@@ -57,6 +65,7 @@ const Navbar: React.FC = () => {
             <a
               key={link.title}
               href={link.href}
+              onClick={(e) => handleNavClick(e, link.href)}
               className="magnetic-button font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
               {link.title}
@@ -103,6 +112,16 @@ const Navbar: React.FC = () => {
                     <a
                       key={link.title}
                       href={link.href}
+                      onClick={(e) => {
+                        handleNavClick(e, link.href);
+                        // Close the sheet by triggering Esc key
+                        document.dispatchEvent(new KeyboardEvent('keydown', {
+                          key: 'Escape',
+                          code: 'Escape',
+                          which: 27,
+                          keyCode: 27,
+                        }));
+                      }}
                       className="py-2 font-medium text-foreground/80 hover:text-foreground transition-colors"
                     >
                       {link.title}

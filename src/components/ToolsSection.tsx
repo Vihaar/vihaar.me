@@ -2,9 +2,8 @@
 import React from "react";
 import ToolCard from "./ToolCard";
 import SVGAnimation from "./SVGAnimation";
-import { ParallaxContainer, ParallaxLayer } from "./Parallax";
 import { Badge } from "@/components/ui/badge";
-import { BarChart4, Briefcase, LineChart, BarChart2, Mail, Globe, Users, TrendingUp, MessageSquare } from "lucide-react";
+import { BarChart4, Briefcase, LineChart, Mail, Users, TrendingUp } from "lucide-react";
 
 const ToolsSection: React.FC = () => {
   const tools = [
@@ -14,7 +13,7 @@ const ToolsSection: React.FC = () => {
       icon: <BarChart4 className="h-6 w-6 text-primary" />,
       usageCount: 1245,
       tags: ["Analytics", "Data"],
-      url: "#",
+      url: "https://tools.vihaar.me/growth-analytics",
     },
     {
       title: "CRM System",
@@ -22,7 +21,7 @@ const ToolsSection: React.FC = () => {
       icon: <Users className="h-6 w-6 text-primary" />,
       usageCount: 2389,
       tags: ["Productivity", "Business"],
-      url: "#",
+      url: "https://tools.vihaar.me/crm-system",
     },
     {
       title: "Email Campaigns",
@@ -30,7 +29,7 @@ const ToolsSection: React.FC = () => {
       icon: <Mail className="h-6 w-6 text-primary" />,
       usageCount: 3150,
       tags: ["Marketing", "Automation"],
-      url: "#",
+      url: "https://tools.vihaar.me/email-campaigns",
     },
     {
       title: "Market Research",
@@ -38,7 +37,7 @@ const ToolsSection: React.FC = () => {
       icon: <LineChart className="h-6 w-6 text-primary" />,
       usageCount: 1752,
       tags: ["Research", "Planning"],
-      url: "#",
+      url: "https://tools.vihaar.me/market-research",
     },
     {
       title: "SEO Toolkit",
@@ -46,7 +45,7 @@ const ToolsSection: React.FC = () => {
       icon: <TrendingUp className="h-6 w-6 text-primary" />,
       usageCount: 2987,
       tags: ["Marketing", "SEO"],
-      url: "#",
+      url: "https://tools.vihaar.me/seo-toolkit",
     },
     {
       title: "Business Planning",
@@ -54,18 +53,16 @@ const ToolsSection: React.FC = () => {
       icon: <Briefcase className="h-6 w-6 text-primary" />,
       usageCount: 1623,
       tags: ["Planning", "Strategy"],
-      url: "#",
+      url: "https://tools.vihaar.me/business-planning",
     },
   ];
 
   return (
     <section className="relative py-24 overflow-hidden" id="tools">
-      <ParallaxContainer className="absolute inset-0 -z-10">
-        <ParallaxLayer speed={0.1} className="absolute inset-0 opacity-20">
-          <div className="absolute top-40 right-20 w-80 h-80 rounded-full bg-secondary/20 blur-3xl" />
-          <div className="absolute bottom-60 left-10 w-64 h-64 rounded-full bg-primary/20 blur-3xl" />
-        </ParallaxLayer>
-      </ParallaxContainer>
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-40 right-20 w-80 h-80 rounded-full bg-secondary/10 blur-3xl" />
+        <div className="absolute bottom-60 left-10 w-64 h-64 rounded-full bg-primary/10 blur-3xl" />
+      </div>
 
       <div className="container">
         <div className="max-w-3xl mx-auto text-center mb-16">
@@ -86,9 +83,9 @@ const ToolsSection: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {tools.map((tool, index) => (
-            <ParallaxLayer key={tool.title} speed={0.05 * (index % 3)} className="relative">
+            <div key={tool.title} className="h-full">
               <ToolCard {...tool} />
-            </ParallaxLayer>
+            </div>
           ))}
         </div>
 

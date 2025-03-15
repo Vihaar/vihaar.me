@@ -7,24 +7,40 @@ import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 import CursorEffect from "@/components/CursorEffect";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import AnimatedGradientBackground from "@/components/AnimatedGradientBackground";
 
 const Index: React.FC = () => {
   // Preload any additional resources
   useEffect(() => {
     document.title = "Vihaar.me | Business Growth Tools";
+    
+    // Force light mode
+    document.documentElement.classList.remove("dark");
+    localStorage.setItem("vihaar-theme", "light");
   }, []);
 
   return (
     <ThemeProvider>
       <div className="relative min-h-screen">
+        <div className="fixed inset-0 -z-10">
+          <AnimatedGradientBackground interactive={true} className="w-full h-full opacity-40" />
+        </div>
         <CursorEffect />
         <Navbar />
         <main>
-          <HeroSection />
-          <ToolsSection />
-          <CTASection />
+          <section id="home">
+            <HeroSection />
+          </section>
+          <section id="tools">
+            <ToolsSection />
+          </section>
+          <section id="about">
+            <CTASection />
+          </section>
         </main>
-        <Footer />
+        <section id="contact">
+          <Footer />
+        </section>
       </div>
     </ThemeProvider>
   );
