@@ -3,57 +3,25 @@ import React from "react";
 import ToolCard from "./ToolCard";
 import SVGAnimation from "./SVGAnimation";
 import { Badge } from "@/components/ui/badge";
-import { BarChart4, Briefcase, LineChart, Mail, Users, TrendingUp } from "lucide-react";
+import { Mail, Code } from "lucide-react";
 
 const ToolsSection: React.FC = () => {
   const tools = [
     {
-      title: "Growth Analytics",
-      description: "Track your business metrics with advanced analytics and reporting tools to make data-driven decisions.",
-      icon: <BarChart4 className="h-6 w-6 text-primary" />,
-      usageCount: 1245,
-      tags: ["Analytics", "Data"],
-      url: "https://tools.vihaar.me/growth-analytics",
-    },
-    {
-      title: "CRM System",
-      description: "Manage customer relationships efficiently with our intuitive CRM solution designed for growing businesses.",
-      icon: <Users className="h-6 w-6 text-primary" />,
-      usageCount: 2389,
-      tags: ["Productivity", "Business"],
-      url: "https://tools.vihaar.me/crm-system",
-    },
-    {
-      title: "Email Campaigns",
-      description: "Create and optimize email marketing campaigns that convert with templates and automation features.",
+      title: "Enrichly",
+      description: "Sales enrichment tool that helps you find and connect with the right prospects, with detailed contact information.",
       icon: <Mail className="h-6 w-6 text-primary" />,
-      usageCount: 3150,
-      tags: ["Marketing", "Automation"],
-      url: "https://tools.vihaar.me/email-campaigns",
+      usageCount: 2389,
+      tags: ["Sales", "Leads"],
+      url: "https://getenrichly.com",
     },
     {
-      title: "Market Research",
-      description: "Get insights into market trends, competitor analysis, and customer behavior to stay ahead.",
-      icon: <LineChart className="h-6 w-6 text-primary" />,
+      title: "Selenium Scripts",
+      description: "Automate web scraping for lead generation with customized Selenium scripts that extract valuable prospect data.",
+      icon: <Code className="h-6 w-6 text-primary" />,
       usageCount: 1752,
-      tags: ["Research", "Planning"],
-      url: "https://tools.vihaar.me/market-research",
-    },
-    {
-      title: "SEO Toolkit",
-      description: "Boost your online visibility with comprehensive SEO tools that help you rank higher on search engines.",
-      icon: <TrendingUp className="h-6 w-6 text-primary" />,
-      usageCount: 2987,
-      tags: ["Marketing", "SEO"],
-      url: "https://tools.vihaar.me/seo-toolkit",
-    },
-    {
-      title: "Business Planning",
-      description: "Create professional business plans with templates, financial projections, and strategy guides.",
-      icon: <Briefcase className="h-6 w-6 text-primary" />,
-      usageCount: 1623,
-      tags: ["Planning", "Strategy"],
-      url: "https://tools.vihaar.me/business-planning",
+      tags: ["Automation", "Scraping"],
+      url: "#coming-soon",
     },
   ];
 
@@ -81,7 +49,7 @@ const ToolsSection: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {tools.map((tool, index) => (
             <div key={tool.title} className="h-full">
               <ToolCard {...tool} />
@@ -92,11 +60,11 @@ const ToolsSection: React.FC = () => {
         <div className="mt-20 max-w-2xl mx-auto text-center">
           <SVGAnimation className="w-full h-32 mb-8">
             <svg viewBox="0 0 500 100" xmlns="http://www.w3.org/2000/svg">
-              <path d="M50,90 Q125,30 250,50 T450,90" 
+              <path d="M50,50 Q125,100 250,50 T450,50" 
                     stroke="currentColor" 
                     strokeWidth="4" 
                     fill="none" />
-              <path d="M50,50 Q125,100 250,50 T450,50" 
+              <path d="M50,90 Q125,30 250,90 T450,90" 
                     stroke="currentColor" 
                     strokeWidth="4" 
                     fill="none" />

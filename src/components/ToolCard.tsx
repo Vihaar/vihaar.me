@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import CounterAnimation from "./CounterAnimation";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Clock } from "lucide-react";
 
 interface ToolCardProps {
   title: string;
@@ -23,6 +23,8 @@ const ToolCard: React.FC<ToolCardProps> = ({
   tags,
   url,
 }) => {
+  const isComingSoon = url === "#coming-soon";
+  
   return (
     <Card className="group overflow-hidden h-full transition-all duration-300 hover:shadow-lg hover:scale-[1.01] border-border hover:border-primary/20">
       <CardHeader className="relative pb-0">
@@ -53,12 +55,19 @@ const ToolCard: React.FC<ToolCardProps> = ({
           />
           <span className="ml-1">people</span>
         </div>
-        <Button variant="ghost" size="sm" className="magnetic-button opacity-80 group-hover:opacity-100 transition-opacity" asChild>
-          <a href={url} target="_blank" rel="noopener noreferrer">
-            <span>Get Tool</span>
-            <ArrowUpRight className="ml-1 h-4 w-4" />
-          </a>
-        </Button>
+        {isComingSoon ? (
+          <Button variant="outline" size="sm" className="opacity-80 group-hover:opacity-100 transition-opacity" disabled>
+            <Clock className="mr-1 h-4 w-4" />
+            <span>Coming Soon</span>
+          </Button>
+        ) : (
+          <Button variant="ghost" size="sm" className="opacity-80 group-hover:opacity-100 transition-opacity" asChild>
+            <a href={url} target="_blank" rel="noopener noreferrer">
+              <span>Get Tool</span>
+              <ArrowUpRight className="ml-1 h-4 w-4" />
+            </a>
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );
