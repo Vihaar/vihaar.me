@@ -3,9 +3,16 @@ import React from "react";
 import { ParallaxContainer, ParallaxLayer } from "./Parallax";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
-import AnimatedGradientBackground from "./AnimatedGradientBackground";
+import { Link } from "react-router-dom";
 
 const HeroSection: React.FC = () => {
+  const scrollToTools = () => {
+    const toolsSection = document.getElementById("tools");
+    if (toolsSection) {
+      toolsSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section className="relative min-h-screen w-full overflow-hidden">
       {/* Background elements with parallax effect */}
@@ -35,7 +42,7 @@ const HeroSection: React.FC = () => {
           <ParallaxLayer speed={-0.2} className="relative">
             <h1 className="text-5xl md:text-7xl font-heading font-bold leading-tight">
               <span className="relative z-10">Hi, I'm </span>
-              <span className="relative inline-block bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              <span className="inline-block bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                 Vihaar
               </span>
             </h1>
@@ -48,13 +55,15 @@ const HeroSection: React.FC = () => {
           </ParallaxLayer>
 
           <ParallaxLayer speed={-0.05} className="relative flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button size="lg" className="text-lg px-8 py-6">
+            <Button size="lg" className="text-lg px-8 py-6" onClick={scrollToTools}>
               <span>Explore My Tools</span>
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button size="lg" variant="outline" className="text-lg px-8 py-6">
-              <Sparkles className="mr-2 h-5 w-5" />
-              <span>Learn More</span>
+            <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
+              <Link to="/signup">
+                <Sparkles className="mr-2 h-5 w-5" />
+                <span>Learn More</span>
+              </Link>
             </Button>
           </ParallaxLayer>
         </div>

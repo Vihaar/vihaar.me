@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import EmailSignup from "./pages/EmailSignup";
 
 // Create placeholder pages for future development
 const PlaceholderPage = ({ title }: { title: string }) => (
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/tools" element={<ToolsPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/signup" element={<EmailSignup />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

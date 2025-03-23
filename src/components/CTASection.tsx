@@ -3,6 +3,7 @@ import React from "react";
 import AnimatedGradientBackground from "./AnimatedGradientBackground";
 import { Button } from "@/components/ui/button";
 import { Mail } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const CTASection: React.FC = () => {
   return (
@@ -22,10 +23,13 @@ const CTASection: React.FC = () => {
             </p>
             <Button 
               size="lg" 
-              className="magnetic-button bg-white text-primary hover:bg-white/90 hover:text-primary text-lg px-8"
+              className="bg-white text-primary hover:bg-white/90 hover:text-primary text-lg px-8"
+              asChild
             >
-              <Mail className="mr-2 h-5 w-5" />
-              <span>Get in Touch</span>
+              <Link to="/signup">
+                <Mail className="mr-2 h-5 w-5" />
+                <span>Get in Touch</span>
+              </Link>
             </Button>
           </div>
         </AnimatedGradientBackground>
