@@ -109,6 +109,19 @@ const EmailSignup: React.FC = () => {
                 </Button>
               </form>
             </Form>
+            
+            <div className="mt-8 pt-6 border-t text-center">
+              <p className="text-foreground/70 mb-2">Hate email newsletters? No problem!</p>
+              <p className="text-foreground/90">
+                Email me directly at{" "}
+                <a 
+                  href="mailto:vbnandigala@gmail.com" 
+                  className="text-primary hover:underline font-medium"
+                >
+                  vbnandigala@gmail.com
+                </a>
+              </p>
+            </div>
           </div>
         </div>
       </div>

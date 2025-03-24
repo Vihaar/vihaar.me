@@ -56,28 +56,34 @@ const Footer: React.FC = () => {
             <h4 className="font-heading font-semibold mb-4">Connect</h4>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href="https://github.com/Vihaar"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-foreground/70 hover:text-foreground transition-colors"
                 aria-label="GitHub"
               >
                 <Github className="h-5 w-5" />
               </a>
               <a
-                href="#"
+                href="https://www.linkedin.com/in/vihaar-nandigala/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-foreground/70 hover:text-foreground transition-colors"
                 aria-label="LinkedIn"
               >
                 <Linkedin className="h-5 w-5" />
               </a>
               <a
-                href="#"
+                href="https://x.com/VihaarNandigala"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-foreground/70 hover:text-foreground transition-colors"
                 aria-label="Twitter"
               >
                 <Twitter className="h-5 w-5" />
               </a>
               <a
-                href="#"
+                href="mailto:vbnandigala@gmail.com"
                 className="text-foreground/70 hover:text-foreground transition-colors"
                 aria-label="Email"
               >

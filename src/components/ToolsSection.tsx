@@ -1,9 +1,9 @@
 
 import React from "react";
 import ToolCard from "./ToolCard";
-import SVGAnimation from "./SVGAnimation";
 import { Badge } from "@/components/ui/badge";
 import { Mail, Code } from "lucide-react";
+import MouseFollowGraphic from "./MouseFollowGraphic";
 
 const ToolsSection: React.FC = () => {
   const tools = [
@@ -58,16 +58,9 @@ const ToolsSection: React.FC = () => {
         </div>
 
         <div className="mt-20 max-w-2xl mx-auto text-center">
-          <SVGAnimation className="w-full h-32 mb-8">
-            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="2 1" />
-              <circle cx="50" cy="50" r="20" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="1 1" />
-              <path d="M15,50 C15,30 35,15 50,15 C65,15 85,30 85,50 C85,70 65,85 50,85 C35,85 15,70 15,50 Z" 
-                    fill="none" stroke="currentColor" strokeWidth="1" />
-              <path d="M20,50 C20,33 33,20 50,20 C67,20 80,33 80,50 C80,67 67,80 50,80 C33,80 20,67 20,50 Z" 
-                    fill="none" stroke="currentColor" strokeWidth="2" />
-            </svg>
-          </SVGAnimation>
+          <div className="w-full h-32 mb-8">
+            <MouseFollowGraphic className="w-full h-full" />
+          </div>
           <h3 className="text-2xl font-heading font-semibold mb-4">
             Every tool has been personally tested and proven effective
           </h3>

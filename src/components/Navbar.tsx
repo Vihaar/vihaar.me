@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Sun, Moon, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import AnimatedLogo from "./AnimatedLogo";
 
 interface NavLink {
   title: string;
@@ -53,10 +54,8 @@ const Navbar: React.FC = () => {
       )}
     >
       <div className="container flex items-center justify-between">
-        <a href="#home" className="flex items-center space-x-2" onClick={(e) => handleNavClick(e, "#home")}>
-          <span className="font-heading text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-            vihaar.me
-          </span>
+        <a href="#home" onClick={(e) => handleNavClick(e, "#home")}>
+          <AnimatedLogo text="vihaar.me" className="text-2xl" />
         </a>
 
         {/* Desktop Navigation */}
@@ -103,9 +102,7 @@ const Navbar: React.FC = () => {
             <SheetContent side="right" className="w-[250px] sm:w-[300px]">
               <div className="flex flex-col h-full">
                 <div className="flex items-center justify-between pb-6">
-                  <span className="font-heading text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-                    vihaar.me
-                  </span>
+                  <AnimatedLogo text="vihaar.me" className="text-xl" />
                 </div>
                 <nav className="flex flex-col space-y-4">
                   {navLinks.map((link) => (

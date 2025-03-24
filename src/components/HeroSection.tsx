@@ -4,6 +4,7 @@ import { ParallaxContainer, ParallaxLayer } from "./Parallax";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import AnimatedLogo from "./AnimatedLogo";
 
 const HeroSection: React.FC = () => {
   const scrollToTools = () => {
@@ -42,9 +43,7 @@ const HeroSection: React.FC = () => {
           <ParallaxLayer speed={-0.2} className="relative">
             <h1 className="text-5xl md:text-7xl font-heading font-bold leading-tight">
               <span className="relative z-10">Hi, I'm </span>
-              <span className="inline-block bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                Vihaar
-              </span>
+              <AnimatedLogo text="Vihaar" className="text-5xl md:text-7xl inline-block" />
             </h1>
           </ParallaxLayer>
 
