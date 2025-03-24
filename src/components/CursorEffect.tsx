@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 export default function CursorEffect() {
   const [position, setPosition] = useState({ x: -100, y: -100 });
-  const [trails, setTrails] = useState<{ x: number; y: number; id: number }[]>([]);
+  const [trails, setTrails] = useState<{ x: number; y: number; id: number; opacity: number; size: number }[]>([]);
   const [isVisible, setIsVisible] = useState(false);
   const [hoveredMagnetic, setHoveredMagnetic] = useState(false);
 
@@ -17,9 +17,16 @@ export default function CursorEffect() {
       setPosition({ x: e.clientX, y: e.clientY });
       setIsVisible(true);
       
-      // Create a new trail dot with unique ID
-      const newTrail = { x: e.clientX, y: e.clientY, id: Date.now() };
-      setTrails(prevTrails => [...prevTrails, newTrail].slice(-10)); // Keep only the 10 most recent trails
+      // Create a new trail dot with unique ID and random properties for fluid effect
+      const newTrail = { 
+        x: e.clientX, 
+        y: e.clientY, 
+        id: Date.now(), 
+        opacity: Math.random() * 0.3 + 0.7,
+        size: Math.random() * 10 + 5
+      };
+      
+      setTrails(prevTrails => [...prevTrails, newTrail].slice(-20)); // Keep more trails for fluid look
     };
 
     // Handle mouse entering/leaving magnetic elements
@@ -89,12 +96,11 @@ export default function CursorEffect() {
     const cleanupInterval = setInterval(() => {
       setTrails(prevTrails => {
         if (prevTrails.length > 0) {
-          const [_, ...rest] = prevTrails;
-          return rest;
+          return prevTrails.slice(1);
         }
         return prevTrails;
       });
-    }, 150);
+    }, 50);
 
     return () => clearInterval(cleanupInterval);
   }, []);
@@ -109,22 +115,42 @@ export default function CursorEffect() {
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,
+          background: 'rgba(139, 92, 246, 0.6)',
+          backdropFilter: 'blur(4px)',
         }}
       />
       
-      {/* Trail effect */}
-      {trails.map((trail, index) => (
-        <div
-          key={trail.id}
-          className="cursor-trail animate-cursor-trail"
-          style={{
-            left: `${trail.x}px`,
-            top: `${trail.y}px`,
-            opacity: (10 - index) / 10, // Fade out based on position in trail
-            transform: `translate(-50%, -50%) scale(${(10 - index) / 10})`, // Scale down based on position in trail
-          }}
-        />
-      ))}
+      {/* Fluid trail effect */}
+      {trails.map((trail, index) => {
+        // Calculate distance from current position for a stretching effect
+        const dx = position.x - trail.x;
+        const dy = position.y - trail.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const angle = Math.atan2(dy, dx);
+        
+        // Create elongated shape based on movement speed
+        const stretchFactor = Math.min(distance / 10, 3);
+        const width = trail.size + stretchFactor * 5;
+        const height = trail.size;
+        
+        return (
+          <div
+            key={trail.id}
+            className="absolute rounded-full pointer-events-none"
+            style={{
+              left: `${trail.x}px`,
+              top: `${trail.y}px`,
+              width: `${width}px`, 
+              height: `${height}px`,
+              opacity: (trail.opacity * (20 - index) / 20), // Fade out gradually
+              transform: `translate(-50%, -50%) rotate(${angle}rad) scale(${(20 - index) / 20})`,
+              background: `rgba(139, 92, 246, ${trail.opacity * 0.3})`,
+              boxShadow: '0 0 10px rgba(139, 92, 246, 0.5)',
+              filter: 'blur(2px)',
+            }}
+          />
+        );
+      })}
     </>
   );
 }

@@ -27,14 +27,15 @@ const MouseFollowGraphic: React.FC<MouseFollowGraphicProps> = ({ className = "" 
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
     
-    // Particles array
-    let particles: {
+    // Fluid simulation variables
+    const particles: {
       x: number;
       y: number;
       size: number;
       color: string;
-      speedX: number;
-      speedY: number;
+      life: number;
+      vx: number;
+      vy: number;
     }[] = [];
     
     // Mouse position
@@ -47,15 +48,19 @@ const MouseFollowGraphic: React.FC<MouseFollowGraphicProps> = ({ className = "" 
       mouseX = e.clientX - rect.left;
       mouseY = e.clientY - rect.top;
       
-      // Add particles
+      // Add fluid particles
       for (let i = 0; i < 3; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 2 + 1;
+        
         particles.push({
           x: mouseX,
           y: mouseY,
-          size: Math.random() * 5 + 2,
-          color: `hsl(${Math.random() * 60 + 250}, 70%, 60%)`,
-          speedX: Math.random() * 2 - 1,
-          speedY: Math.random() * 2 - 1
+          size: Math.random() * 20 + 10,
+          color: `hsla(${Math.random() * 60 + 250}, 70%, 60%, 0.3)`,
+          life: 100,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed
         });
       }
     };
@@ -64,26 +69,62 @@ const MouseFollowGraphic: React.FC<MouseFollowGraphicProps> = ({ className = "" 
     
     // Animation function
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Create semi-transparent fade effect
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Update particles
+      // Update fluid particles
       for (let i = 0; i < particles.length; i++) {
         let p = particles[i];
         
-        p.x += p.speedX;
-        p.y += p.speedY;
+        // Update position
+        p.x += p.vx;
+        p.y += p.vy;
         
-        // Reduce size
-        if (p.size > 0.2) p.size -= 0.1;
+        // Reduce life
+        p.life -= 1;
         
-        // Draw particle
+        // Get opacity based on life
+        const opacity = p.life / 100;
+        
+        // Draw fluid-like element
+        const gradient = ctx.createRadialGradient(
+          p.x, p.y, 0,
+          p.x, p.y, p.size
+        );
+        
+        gradient.addColorStop(0, p.color.replace('0.3', opacity.toString()));
+        gradient.addColorStop(1, p.color.replace('0.3', '0'));
+        
         ctx.beginPath();
+        ctx.fillStyle = gradient;
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
         ctx.fill();
         
-        // Remove small particles
-        if (p.size <= 0.2) {
+        // Connect nearby particles with curved lines for more fluid look
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dx = p2.x - p.x;
+          const dy = p2.y - p.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          
+          if (distance < 50) {
+            ctx.beginPath();
+            ctx.strokeStyle = p.color.replace('0.3', (opacity * 0.5).toString());
+            ctx.lineWidth = Math.min(p.life / 50, 3);
+            
+            // Create a curved line between particles
+            const midX = (p.x + p2.x) / 2;
+            const midY = (p.y + p2.y) / 2 - 15;
+            
+            ctx.moveTo(p.x, p.y);
+            ctx.quadraticCurveTo(midX, midY, p2.x, p2.y);
+            ctx.stroke();
+          }
+        }
+        
+        // Remove dead particles
+        if (p.life <= 0) {
           particles.splice(i, 1);
           i--;
         }
@@ -94,11 +135,17 @@ const MouseFollowGraphic: React.FC<MouseFollowGraphicProps> = ({ className = "" 
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          size: Math.random() * 3 + 1,
-          color: `hsl(${Math.random() * 60 + 250}, 70%, 60%)`,
-          speedX: Math.random() * 1 - 0.5,
-          speedY: Math.random() * 1 - 0.5
+          size: Math.random() * 15 + 5,
+          color: `hsla(${Math.random() * 60 + 250}, 70%, 60%, 0.3)`,
+          life: 50,
+          vx: Math.random() * 1 - 0.5,
+          vy: Math.random() * 1 - 0.5
         });
+      }
+      
+      // Limit particles to prevent performance issues
+      if (particles.length > 100) {
+        particles.splice(0, particles.length - 100);
       }
       
       requestAnimationFrame(animate);
