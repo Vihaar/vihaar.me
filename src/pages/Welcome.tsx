@@ -9,13 +9,14 @@ const Welcome: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [prevMousePosition, setPrevMousePosition] = useState({ x: 0, y: 0 });
 
   // Handle canvas setup for fluid effect
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
     // Set canvas dimensions
@@ -28,77 +29,184 @@ const Welcome: React.FC = () => {
     window.addEventListener('resize', resizeCanvas);
 
     // Fluid simulation properties
-    let points: {x: number; y: number; vx: number; vy: number; life: number; color: string}[] = [];
+    const fluidCells: {
+      x: number;
+      y: number;
+      density: number;
+      velocity: { x: number; y: number };
+      color: string;
+      opacity: number;
+    }[] = [];
     
-    // Track mouse position
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+    const generateFluidCells = () => {
+      fluidCells.length = 0;
+      const cellSize = 10;
+      const cols = Math.ceil(canvas.width / cellSize);
+      const rows = Math.ceil(canvas.height / cellSize);
       
-      // Add fluid points
-      for (let i = 0; i < 3; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 1 + 0.5;
+      for (let i = 0; i < 200; i++) {
+        fluidCells.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          density: Math.random() * 0.5 + 0.5,
+          velocity: { x: 0, y: 0 },
+          color: getRandomColor(),
+          opacity: Math.random() * 0.5 + 0.3
+        });
+      }
+    };
+    
+    const getRandomColor = () => {
+      const colors = [
+        'rgba(139, 92, 246, 1)',  // Purple
+        'rgba(14, 165, 233, 1)',  // Blue
+        'rgba(249, 115, 22, 1)',  // Orange
+        'rgba(16, 185, 129, 1)',  // Green
+        'rgba(239, 68, 68, 1)',   // Red
+        'rgba(236, 72, 153, 1)'   // Pink
+      ];
+      return colors[Math.floor(Math.random() * colors.length)];
+    };
+    
+    generateFluidCells();
+    
+    // Initial black background
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Track mouse position and velocity
+    let mouseX = -1000;
+    let mouseY = -1000;
+    let mouseVelocityX = 0;
+    let mouseVelocityY = 0;
+    let lastMouseX = -1000;
+    let lastMouseY = -1000;
+    
+    const handleMouseMove = (e: MouseEvent) => {
+      // Calculate velocity
+      mouseVelocityX = e.clientX - lastMouseX;
+      mouseVelocityY = e.clientY - lastMouseY;
+      
+      // Update positions
+      lastMouseX = mouseX;
+      lastMouseY = mouseY;
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      
+      setMousePosition({ x: e.clientX, y: e.clientY });
+      setPrevMousePosition({ x: lastMouseX, y: lastMouseY });
+      
+      // Add new fluid cells in response to mouse movement
+      const speed = Math.sqrt(mouseVelocityX * mouseVelocityX + mouseVelocityY * mouseVelocityY);
+      const count = Math.min(Math.floor(speed / 2), 5);
+      
+      for (let i = 0; i < count; i++) {
+        const angle = Math.atan2(mouseVelocityY, mouseVelocityX) + (Math.random() - 0.5) * 1;
+        const dist = Math.random() * 30;
         
-        const hue = Math.random() * 60 + 250; // Blue to purple
-        const point = {
-          x: e.clientX,
-          y: e.clientY,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed,
-          life: 100,
-          color: `hsla(${hue}, 70%, 60%, 0.7)`
-        };
-        
-        points.push(point);
+        fluidCells.push({
+          x: mouseX + Math.cos(angle) * dist,
+          y: mouseY + Math.sin(angle) * dist,
+          density: Math.random() * 0.5 + 0.5,
+          velocity: { 
+            x: mouseVelocityX * (Math.random() * 0.5 + 0.5), 
+            y: mouseVelocityY * (Math.random() * 0.5 + 0.5) 
+          },
+          color: getRandomColor(),
+          opacity: Math.random() * 0.8 + 0.2
+        });
       }
     };
     
     window.addEventListener('mousemove', handleMouseMove);
     
     // Animation function
-    function animate() {
-      // Clear with a slight fade effect instead of completely clearing
+    const animate = () => {
+      // Semi-transparent black for fade effect
       ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Update and draw fluid points
-      for (let i = 0; i < points.length; i++) {
-        const p = points[i];
+      // Update and draw fluid cells
+      for (let i = 0; i < fluidCells.length; i++) {
+        const cell = fluidCells[i];
         
-        // Apply physics
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life -= 0.5;
+        // Update position based on velocity
+        cell.x += cell.velocity.x * 0.2;
+        cell.y += cell.velocity.y * 0.2;
         
-        // Draw fluid element
-        const size = Math.min(p.life / 2, 20);
-        const opacity = p.life / 100;
+        // Apply dampening
+        cell.velocity.x *= 0.98;
+        cell.velocity.y *= 0.98;
         
-        // Create a gradient for each point for more fluid look
-        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, size);
-        gradient.addColorStop(0, p.color.replace('0.7', opacity.toString()));
-        gradient.addColorStop(1, p.color.replace('0.7', '0'));
+        // Apply gravity and randomness for organic movement
+        cell.velocity.y += 0.01;
+        cell.velocity.x += (Math.random() - 0.5) * 0.1;
+        cell.velocity.y += (Math.random() - 0.5) * 0.1;
         
+        // Decrease opacity over time
+        cell.opacity *= 0.99;
+        
+        // Draw fluid blob
+        const size = Math.max(cell.density * 50, 20);
+        
+        // Skip rendering nearly transparent cells
+        if (cell.opacity < 0.01) {
+          fluidCells.splice(i, 1);
+          i--;
+          continue;
+        }
+        
+        // Use more advanced gradient for fluid look
+        const gradient = ctx.createRadialGradient(
+          cell.x, cell.y, 0,
+          cell.x, cell.y, size
+        );
+        
+        // Convert color to rgba with cell opacity
+        const baseColor = cell.color.replace('1)', `${cell.opacity})`);
+        const transparentColor = cell.color.replace('1)', '0)');
+        
+        gradient.addColorStop(0, baseColor);
+        gradient.addColorStop(0.6, baseColor.replace('1)', `${cell.opacity * 0.6})`));
+        gradient.addColorStop(1, transparentColor);
+        
+        ctx.globalCompositeOperation = 'screen';
         ctx.beginPath();
+        
+        // Use quadratic curves for more organic shapes
+        const wobble = 1 + Math.sin(Date.now() / 200 + i) * 0.1;
+        ctx.ellipse(cell.x, cell.y, size * wobble, size / wobble, 0, 0, Math.PI * 2);
         ctx.fillStyle = gradient;
-        ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
         ctx.fill();
         
-        // Remove dead points
-        if (p.life <= 0) {
-          points.splice(i, 1);
-          i--;
+        // Create interaction with mouse
+        const dx = cell.x - mouseX;
+        const dy = cell.y - mouseY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const repelDistance = 100;
+        
+        if (distance < repelDistance) {
+          const angle = Math.atan2(dy, dx);
+          const force = (repelDistance - distance) / repelDistance;
+          cell.velocity.x += Math.cos(angle) * force * 0.5;
+          cell.velocity.y += Math.sin(angle) * force * 0.5;
         }
       }
       
+      // Limit the number of cells
+      if (fluidCells.length > 300) {
+        fluidCells.splice(0, fluidCells.length - 300);
+      }
+      
       requestAnimationFrame(animate);
-    }
+    };
     
-    animate();
+    const animationId = requestAnimationFrame(animate);
     
     return () => {
       window.removeEventListener('resize', resizeCanvas);
       window.removeEventListener('mousemove', handleMouseMove);
+      cancelAnimationFrame(animationId);
     };
   }, []);
 
@@ -111,38 +219,50 @@ const Welcome: React.FC = () => {
     if (!canvas || !ctx) return;
     
     // Create fluid explosion
-    const explosionPoints = 200;
+    const explosionPoints = 50;
     const centerX = mousePosition.x;
     const centerY = mousePosition.y;
     
-    // Clear canvas first for dramatic effect
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Helper function to create explosion
+    const createFluidExplosion = () => {
+      for (let i = 0; i < explosionPoints; i++) {
+        const angle = (i / explosionPoints) * Math.PI * 2;
+        const distance = Math.random() * 20 + 5;
+        const speed = Math.random() * 10 + 10;
+        
+        setTimeout(() => {
+          // Create expanding radial gradient
+          const gradient = ctx.createRadialGradient(
+            centerX, centerY, 0,
+            centerX, centerY, distance * 10 + i * 5
+          );
+          
+          const hue = Math.random() * 60 + 250; // Blue to purple
+          gradient.addColorStop(0, `hsla(${hue}, 70%, 60%, 0.8)`);
+          gradient.addColorStop(0.4, `hsla(${hue}, 70%, 60%, 0.4)`);
+          gradient.addColorStop(1, `hsla(${hue}, 70%, 60%, 0)`);
+          
+          ctx.globalCompositeOperation = 'screen';
+          ctx.beginPath();
+          ctx.fillStyle = gradient;
+          
+          // Create wobbling circle
+          const wobble = 1 + Math.sin(i / 10) * 0.2;
+          ctx.ellipse(
+            centerX + Math.cos(angle) * distance, 
+            centerY + Math.sin(angle) * distance, 
+            100 * wobble + i * 3, 
+            100 / wobble + i * 3, 
+            0, 0, Math.PI * 2
+          );
+          ctx.fill();
+        }, i * 10);
+      }
+    };
     
-    // Create circular pattern of fluid
-    for (let i = 0; i < explosionPoints; i++) {
-      const angle = (i / explosionPoints) * Math.PI * 2;
-      const distance = Math.random() * 100 + 50;
-      const delay = Math.random() * 500;
-      
-      setTimeout(() => {
-        const hue = Math.random() * 60 + 250; // Blue to purple range
-        const size = Math.random() * 50 + 20;
-        
-        // Draw explosion element
-        const gradient = ctx.createRadialGradient(
-          centerX, centerY, 0,
-          centerX, centerY, canvas.width
-        );
-        
-        gradient.addColorStop(0, `hsla(${hue}, 70%, 60%, 0.8)`);
-        gradient.addColorStop(0.1, `hsla(${hue}, 70%, 60%, 0.3)`);
-        gradient.addColorStop(0.2, 'rgba(0,0,0,0)');
-        
-        ctx.beginPath();
-        ctx.fillStyle = gradient;
-        ctx.arc(centerX, centerY, size + distance, 0, Math.PI * 2);
-        ctx.fill();
-      }, delay);
+    // Create multiple explosion waves
+    for (let wave = 0; wave < 5; wave++) {
+      setTimeout(createFluidExplosion, wave * 100);
     }
     
     // Navigate after animation

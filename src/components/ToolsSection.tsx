@@ -1,10 +1,10 @@
 
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import ToolCard from "./ToolCard";
 import { Badge } from "@/components/ui/badge";
 import { Mail, Code } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
-import FluidPhoneReveal from "./FluidPhoneReveal";
+import FluidEmailReveal from "./FluidEmailReveal";
 
 const ToolsSection: React.FC = () => {
   const titleRef = useScrollReveal({ threshold: 0.2 });
@@ -68,8 +68,8 @@ const ToolsSection: React.FC = () => {
 
         <div className="mt-20 max-w-2xl mx-auto text-center">
           <div ref={phoneRevealRef} className="w-full h-64 mb-8 rounded-lg overflow-hidden">
-            <FluidPhoneReveal 
-              phoneNumber="(248) 917-9407"
+            <FluidEmailReveal 
+              email="vbnandigala@gmail.com"
               className="w-full h-full cursor-none"
             />
           </div>
