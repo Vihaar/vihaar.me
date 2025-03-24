@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import CursorEffect from "@/components/CursorEffect";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import AnimatedGradientBackground from "@/components/AnimatedGradientBackground";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const Index: React.FC = () => {
   // Preload any additional resources
@@ -20,6 +21,12 @@ const Index: React.FC = () => {
     localStorage.setItem("vihaar-theme", "light");
   }, []);
 
+  // Get refs for scroll reveal animations
+  const heroRef = useScrollReveal({ threshold: 0.1 });
+  const toolsRef = useScrollReveal({ threshold: 0.1 });
+  const ctaRef = useScrollReveal({ threshold: 0.1 });
+  const footerRef = useScrollReveal({ threshold: 0.1 });
+
   return (
     <ThemeProvider>
       <div className="relative min-h-screen">
@@ -29,19 +36,19 @@ const Index: React.FC = () => {
         <CursorEffect />
         <Navbar />
         <main>
-          <section id="home">
+          <div ref={heroRef} id="home">
             <HeroSection />
-          </section>
-          <section id="tools">
+          </div>
+          <div ref={toolsRef} id="tools">
             <ToolsSection />
-          </section>
-          <section id="about">
+          </div>
+          <div ref={ctaRef} id="about">
             <CTASection />
-          </section>
+          </div>
         </main>
-        <section id="contact">
+        <div ref={footerRef} id="contact">
           <Footer />
-        </section>
+        </div>
       </div>
     </ThemeProvider>
   );

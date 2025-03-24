@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import EmailSignup from "./pages/EmailSignup";
+import Welcome from "./pages/Welcome";
 
 // Create placeholder pages for future development
 const PlaceholderPage = ({ title }: { title: string }) => (
@@ -32,7 +33,8 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
+          <Route path="/home" element={<Index />} />
+          <Route path="/" element={<Welcome />} />
           <Route path="/tools" element={<ToolsPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />

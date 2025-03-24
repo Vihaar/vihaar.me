@@ -7,58 +7,107 @@ interface MouseFollowGraphicProps {
 
 const MouseFollowGraphic: React.FC<MouseFollowGraphicProps> = ({ className = "" }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const svgRef = useRef<SVGSVGElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   
   useEffect(() => {
     const container = containerRef.current;
-    const svg = svgRef.current;
+    const canvas = canvasRef.current;
     
-    if (!container || !svg) return;
+    if (!container || !canvas) return;
     
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = container.getBoundingClientRect();
-      
-      // Get mouse position relative to container
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-      
-      // Calculate relative position (0-1)
-      const relX = mouseX / rect.width;
-      const relY = mouseY / rect.height;
-      
-      // Apply transformations to SVG elements based on mouse position
-      const circles = svg.querySelectorAll('circle');
-      const paths = svg.querySelectorAll('path');
-      
-      // Move circles
-      circles.forEach((circle, index) => {
-        const factor = index % 2 === 0 ? 1 : -1;
-        const intensity = 10 * (index + 1) / circles.length;
-        
-        const cx = parseFloat(circle.getAttribute('cx') || '50');
-        const cy = parseFloat(circle.getAttribute('cy') || '50');
-        
-        const offsetX = (relX - 0.5) * intensity * factor;
-        const offsetY = (relY - 0.5) * intensity * factor;
-        
-        circle.setAttribute('cx', `${cx + offsetX}`);
-        circle.setAttribute('cy', `${cy + offsetY}`);
-      });
-      
-      // Distort paths
-      paths.forEach((path, index) => {
-        const intensity = 5 * (index + 1) / paths.length;
-        const offsetX = (relX - 0.5) * intensity;
-        const offsetY = (relY - 0.5) * intensity;
-        
-        path.setAttribute('transform', `translate(${offsetX}, ${offsetY})`);
-      });
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    // Set canvas dimensions
+    const resizeCanvas = () => {
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
     };
     
-    // Add mouse move listener
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    // Particles array
+    let particles: {
+      x: number;
+      y: number;
+      size: number;
+      color: string;
+      speedX: number;
+      speedY: number;
+    }[] = [];
+    
+    // Mouse position
+    let mouseX = canvas.width / 2;
+    let mouseY = canvas.height / 2;
+    
+    // Handle mouse move
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = container.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+      
+      // Add particles
+      for (let i = 0; i < 3; i++) {
+        particles.push({
+          x: mouseX,
+          y: mouseY,
+          size: Math.random() * 5 + 2,
+          color: `hsl(${Math.random() * 60 + 250}, 70%, 60%)`,
+          speedX: Math.random() * 2 - 1,
+          speedY: Math.random() * 2 - 1
+        });
+      }
+    };
+    
     container.addEventListener('mousemove', handleMouseMove);
     
+    // Animation function
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Update particles
+      for (let i = 0; i < particles.length; i++) {
+        let p = particles[i];
+        
+        p.x += p.speedX;
+        p.y += p.speedY;
+        
+        // Reduce size
+        if (p.size > 0.2) p.size -= 0.1;
+        
+        // Draw particle
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        
+        // Remove small particles
+        if (p.size <= 0.2) {
+          particles.splice(i, 1);
+          i--;
+        }
+      }
+      
+      // Add ambient particles
+      if (Math.random() > 0.95) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() * 3 + 1,
+          color: `hsl(${Math.random() * 60 + 250}, 70%, 60%)`,
+          speedX: Math.random() * 1 - 0.5,
+          speedY: Math.random() * 1 - 0.5
+        });
+      }
+      
+      requestAnimationFrame(animate);
+    };
+    
+    animate();
+    
     return () => {
+      window.removeEventListener('resize', resizeCanvas);
       container.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
@@ -68,27 +117,10 @@ const MouseFollowGraphic: React.FC<MouseFollowGraphicProps> = ({ className = "" 
       ref={containerRef} 
       className={`relative w-full h-full ${className}`}
     >
-      <svg 
-        ref={svgRef}
-        viewBox="0 0 100 100" 
-        xmlns="http://www.w3.org/2000/svg"
+      <canvas 
+        ref={canvasRef}
         className="w-full h-full"
-      >
-        <circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="2 1" />
-        <circle cx="50" cy="50" r="20" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="1 1" />
-        <path 
-          d="M15,50 C15,30 35,15 50,15 C65,15 85,30 85,50 C85,70 65,85 50,85 C35,85 15,70 15,50 Z" 
-          fill="none" 
-          stroke="currentColor" 
-          strokeWidth="1" 
-        />
-        <path 
-          d="M20,50 C20,33 33,20 50,20 C67,20 80,33 80,50 C80,67 67,80 50,80 C33,80 20,67 20,50 Z" 
-          fill="none" 
-          stroke="currentColor" 
-          strokeWidth="2" 
-        />
-      </svg>
+      />
     </div>
   );
 };
