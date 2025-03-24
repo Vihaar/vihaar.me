@@ -38,14 +38,14 @@ const FluidEmailReveal: React.FC<FluidEmailRevealProps> = ({ email, className = 
       vy: number;
     }
     
-    // Create bubbles
+    // Create bubbles - increase the count significantly
     const bubbles: Bubble[] = [];
-    const bubbleCount = 100;
+    const bubbleCount = 300; // Increased from 100 to 300
     
     const createBubbles = () => {
       bubbles.length = 0;
       for (let i = 0; i < bubbleCount; i++) {
-        const radius = Math.random() * 20 + 10;
+        const radius = Math.random() * 18 + 5; // Varied bubble sizes
         const bubble: Bubble = {
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
@@ -66,6 +66,10 @@ const FluidEmailReveal: React.FC<FluidEmailRevealProps> = ({ email, className = 
         `rgba(75, 192, 192, ${alpha})`,  // Green
         `rgba(153, 102, 255, ${alpha})`, // Purple
         `rgba(255, 159, 64, ${alpha})`,  // Orange
+        `rgba(255, 127, 223, ${alpha})`, // Pink
+        `rgba(102, 204, 153, ${alpha})`, // Mint
+        `rgba(178, 102, 255, ${alpha})`, // Lavender
+        `rgba(255, 117, 24, ${alpha})`,  // Coral
       ];
       return colors[Math.floor(Math.random() * colors.length)];
     };
@@ -124,21 +128,21 @@ const FluidEmailReveal: React.FC<FluidEmailRevealProps> = ({ email, className = 
       for (let i = 0; i < bubbles.length; i++) {
         const bubble = bubbles[i];
         
-        // Apply cursor avoidance behavior
+        // Apply cursor avoidance behavior - increased repel radius and force
         if (isMouseOver) {
           const dx = bubble.x - mouseX;
           const dy = bubble.y - mouseY;
           const distance = Math.sqrt(dx * dx + dy * dy);
-          const repelRadius = 100; // Radius of cursor influence
+          const repelRadius = 120; // Increased from 100 to 120
           
           if (distance < repelRadius) {
             // Calculate repulsion force (stronger when closer)
             const force = (repelRadius - distance) / repelRadius;
             const angle = Math.atan2(dy, dx);
             
-            // Apply force to velocity
-            bubble.vx += Math.cos(angle) * force * 2;
-            bubble.vy += Math.sin(angle) * force * 2;
+            // Apply force to velocity - increased force multiplier
+            bubble.vx += Math.cos(angle) * force * 3;
+            bubble.vy += Math.sin(angle) * force * 3;
           }
         }
         
@@ -168,13 +172,7 @@ const FluidEmailReveal: React.FC<FluidEmailRevealProps> = ({ email, className = 
           bubble.vy *= -0.7;
         }
         
-        // Draw bubble
-        ctx.beginPath();
-        ctx.arc(bubble.x, bubble.y, bubble.radius, 0, Math.PI * 2);
-        ctx.fillStyle = bubble.color;
-        ctx.fill();
-        
-        // Add highlight effect to bubble
+        // Draw bubble with highlight effect
         const gradient = ctx.createRadialGradient(
           bubble.x - bubble.radius * 0.3, 
           bubble.y - bubble.radius * 0.3,

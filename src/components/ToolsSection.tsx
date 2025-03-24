@@ -74,11 +74,11 @@ const ToolsSection: React.FC = () => {
             />
           </div>
           <h3 className="text-2xl font-heading font-semibold mb-4">
-            Every tool has been personally tested and proven effective
+            Here's my email, feel free to reach out!
           </h3>
           <p className="text-foreground/70">
-            These are the exact tools that helped me achieve consistent growth. 
-            I've tested and refined this toolkit over years of business development.
+            Feel free to email me about anything. I would love to help with your business growth questions,
+            discuss these tools further, or collaborate on exciting new projects.
           </p>
         </div>
       </div>
