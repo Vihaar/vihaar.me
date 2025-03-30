@@ -103,7 +103,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
         
-        {/* DoodleJump Game integrated with footer elements */}
+        {/* DoodleJump Game integrated into the footer - this is the only game canvas */}
         <div className="relative min-h-[200px]">
           <DoodleJumpGame />
         </div>

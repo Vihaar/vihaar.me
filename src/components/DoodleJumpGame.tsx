@@ -53,7 +53,7 @@ const DoodleJumpGame: React.FC = () => {
   // Load player image
   useEffect(() => {
     const playerImage = new Image();
-    playerImage.src = 'public/lovable-uploads/4157d1bc-af23-45a6-afb1-b96ba4a7b8b1.png';
+    playerImage.src = 'public/lovable-uploads/2cba7e39-9c34-4f6f-ad92-d22e7206d26c.png';
     playerImage.onload = () => {
       playerImageRef.current = playerImage;
     };
@@ -69,8 +69,9 @@ const DoodleJumpGame: React.FC = () => {
     // Set canvas dimensions based on parent element
     const footerSection = canvas.closest("footer");
     if (footerSection) {
+      // Make the game cover the entire footer section
       canvas.width = footerSection.clientWidth;
-      canvas.height = footerSection.clientHeight - 100; // Leave space for copyright
+      canvas.height = footerSection.clientHeight - 120; // Leave space for copyright
       
       gameRef.current.gameAreaWidth = canvas.width;
       gameRef.current.gameAreaHeight = canvas.height;
@@ -86,31 +87,46 @@ const DoodleJumpGame: React.FC = () => {
         isJumping: false,
       };
       
-      // Find all link elements in the footer to use as platforms
-      const linkElements = footerSection.querySelectorAll('a');
+      // Find all link elements and headings in the footer to use as platforms
+      const allElements = [
+        ...Array.from(footerSection.querySelectorAll('a')), 
+        ...Array.from(footerSection.querySelectorAll('h3, h4')),
+        ...Array.from(footerSection.querySelectorAll('p'))
+      ];
+      
       gameRef.current.platforms = [];
       
-      linkElements.forEach(link => {
-        const rect = link.getBoundingClientRect();
+      allElements.forEach(element => {
+        const rect = element.getBoundingClientRect();
         const footerRect = footerSection.getBoundingClientRect();
         
         gameRef.current.platforms.push({
           x: rect.left - footerRect.left,
           y: rect.top - footerRect.top,
           width: rect.width,
-          element: link
+          element: element as HTMLElement
         });
       });
       
-      // Add some additional platforms if needed
-      if (gameRef.current.platforms.length < 5) {
-        const additionalCount = 5 - gameRef.current.platforms.length;
+      // Add some additional platforms if needed for better gameplay
+      if (gameRef.current.platforms.length < 10) {
+        const additionalCount = 10 - gameRef.current.platforms.length;
         for (let i = 0; i < additionalCount; i++) {
+          // Create a temporary div element as platform
+          const tempElement = document.createElement('div');
+          tempElement.style.position = 'absolute';
+          tempElement.style.left = `${Math.random() * (canvas.width - 80) + 40}px`;
+          tempElement.style.top = `${Math.random() * (canvas.height - 50) + 50}px`;
+          tempElement.style.width = '80px';
+          tempElement.style.height = '10px';
+          tempElement.style.backgroundColor = 'rgba(139, 92, 246, 0.2)';
+          footerSection.appendChild(tempElement);
+          
           gameRef.current.platforms.push({
-            x: Math.random() * (canvas.width - 80) + 40,
-            y: Math.random() * (canvas.height - 50) + 50,
+            x: parseInt(tempElement.style.left),
+            y: parseInt(tempElement.style.top),
             width: 80,
-            element: document.createElement('div')
+            element: tempElement
           });
         }
       }
@@ -179,6 +195,30 @@ const DoodleJumpGame: React.FC = () => {
         
         // Highlight the platform element when jumped on
         platform.element.classList.add('text-primary');
+        
+        // If the element has a fluid reveal, trigger hover effect
+        const parentElement = platform.element.closest('.relative');
+        if (parentElement && parentElement.querySelector('canvas')) {
+          // Simulate hover by adding a class or triggering a mouseover event
+          const hoverEvent = new MouseEvent('mouseover', {
+            view: window,
+            bubbles: true,
+            cancelable: true
+          });
+          parentElement.dispatchEvent(hoverEvent);
+          
+          // Remove after a short delay
+          setTimeout(() => {
+            const leaveEvent = new MouseEvent('mouseleave', {
+              view: window,
+              bubbles: true,
+              cancelable: true
+            });
+            parentElement.dispatchEvent(leaveEvent);
+          }, 1000);
+        }
+        
+        // Remove highlight after a short delay
         setTimeout(() => {
           platform.element.classList.remove('text-primary');
         }, 300);
@@ -239,6 +279,17 @@ const DoodleJumpGame: React.FC = () => {
     gameRef.current.gameActive = false;
     setIsActive(false);
     setScore(0);
+    
+    // Clean up any temporary platforms
+    const footerSection = canvasRef.current?.closest("footer");
+    if (footerSection) {
+      gameRef.current.platforms.forEach(platform => {
+        if (platform.element.tagName === 'DIV' && 
+            platform.element.style.backgroundColor === 'rgba(139, 92, 246, 0.2)') {
+          platform.element.remove();
+        }
+      });
+    }
   };
 
   useEffect(() => {
