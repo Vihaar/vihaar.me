@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Github, Linkedin, Twitter, Mail } from "lucide-react";
+import DoodleJumpGame from "./DoodleJumpGame";
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -92,6 +93,12 @@ const Footer: React.FC = () => {
             </div>
           </div>
         </div>
+        
+        {/* Doodle Jump Game */}
+        <div className="mb-8 border border-border rounded-lg overflow-hidden">
+          <DoodleJumpGame />
+        </div>
+        
         <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-foreground/70 text-sm">
             &copy; {currentYear} vihaar.me. All rights reserved.

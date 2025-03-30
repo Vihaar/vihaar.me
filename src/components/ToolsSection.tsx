@@ -1,16 +1,19 @@
 
-import React from "react";
+import React, { useRef } from "react";
 import ToolCard from "./ToolCard";
 import { Badge } from "@/components/ui/badge";
-import { Mail, Code } from "lucide-react";
+import { Mail, Code, Copy, Check } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import FluidEmailReveal from "./FluidEmailReveal";
+import { useToast } from "@/components/ui/use-toast";
 
 const ToolsSection: React.FC = () => {
   const titleRef = useScrollReveal({ threshold: 0.2 });
   const descriptionRef = useScrollReveal({ threshold: 0.2 });
   const toolsContainerRef = useScrollReveal({ threshold: 0.1 });
-  const phoneRevealRef = useScrollReveal({ threshold: 0.2 });
+  const emailRevealRef = useScrollReveal({ threshold: 0.2 });
+  const { toast } = useToast();
+  const [copied, setCopied] = React.useState(false);
   
   const tools = [
     {
@@ -30,6 +33,19 @@ const ToolsSection: React.FC = () => {
       url: "#coming-soon",
     },
   ];
+
+  const email = "vbnandigala@gmail.com";
+
+  const copyEmail = () => {
+    navigator.clipboard.writeText(email).then(() => {
+      setCopied(true);
+      toast({
+        title: "Email copied!",
+        description: `${email} has been copied to your clipboard.`,
+      });
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   return (
     <section className="relative py-24 overflow-hidden" id="tools">
@@ -67,11 +83,18 @@ const ToolsSection: React.FC = () => {
         </div>
 
         <div className="mt-20 max-w-2xl mx-auto text-center">
-          <div ref={phoneRevealRef} className="w-full h-64 mb-8 rounded-lg overflow-hidden">
+          <div ref={emailRevealRef} className="relative w-full h-64 mb-8 rounded-lg overflow-hidden group">
             <FluidEmailReveal 
-              email="vbnandigala@gmail.com"
+              email={email}
               className="w-full h-full cursor-none"
             />
+            <button 
+              onClick={copyEmail} 
+              className="absolute bottom-4 right-4 bg-background/80 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+              aria-label="Copy email address"
+            >
+              {copied ? <Check className="h-5 w-5 text-green-500" /> : <Copy className="h-5 w-5 text-primary" />}
+            </button>
           </div>
           <h3 className="text-2xl font-heading font-semibold mb-4">
             Here's my email, feel free to reach out!

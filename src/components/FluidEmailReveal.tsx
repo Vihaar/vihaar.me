@@ -9,12 +9,14 @@ interface FluidEmailRevealProps {
 const FluidEmailReveal: React.FC<FluidEmailRevealProps> = ({ email, className = "" }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const emailTextRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     const container = containerRef.current;
     const canvas = canvasRef.current;
+    const emailText = emailTextRef.current;
     
-    if (!container || !canvas) return;
+    if (!container || !canvas || !emailText) return;
     
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -27,6 +29,10 @@ const FluidEmailReveal: React.FC<FluidEmailRevealProps> = ({ email, className = 
     
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
+    
+    // Position text element
+    emailText.style.top = `${container.clientHeight / 2 - emailText.clientHeight / 2}px`;
+    emailText.style.left = `${container.clientWidth / 2 - emailText.clientWidth / 2}px`;
     
     // Bubble properties
     interface Bubble {
@@ -97,17 +103,6 @@ const FluidEmailReveal: React.FC<FluidEmailRevealProps> = ({ email, className = 
     container.addEventListener('mousemove', handleMouseMove);
     container.addEventListener('mouseleave', handleMouseLeave);
     
-    // Draw email text
-    function drawEmail() {
-      ctx.save();
-      ctx.fillStyle = '#000';
-      ctx.font = 'bold 24px Arial';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(email, canvas.width / 2, canvas.height / 2);
-      ctx.restore();
-    }
-    
     // Animation loop
     function animate() {
       // Clear canvas
@@ -121,10 +116,7 @@ const FluidEmailReveal: React.FC<FluidEmailRevealProps> = ({ email, className = 
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Draw email first
-      drawEmail();
-      
-      // Draw bubbles over email to hide it
+      // Draw bubbles to hide email
       for (let i = 0; i < bubbles.length; i++) {
         const bubble = bubbles[i];
         
@@ -173,7 +165,7 @@ const FluidEmailReveal: React.FC<FluidEmailRevealProps> = ({ email, className = 
         }
         
         // Draw bubble with highlight effect
-        const gradient = ctx.createRadialGradient(
+        const bubbleGradient = ctx.createRadialGradient(
           bubble.x - bubble.radius * 0.3, 
           bubble.y - bubble.radius * 0.3,
           bubble.radius * 0.1,
@@ -181,12 +173,12 @@ const FluidEmailReveal: React.FC<FluidEmailRevealProps> = ({ email, className = 
           bubble.y,
           bubble.radius
         );
-        gradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
-        gradient.addColorStop(1, bubble.color);
+        bubbleGradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
+        bubbleGradient.addColorStop(1, bubble.color);
         
         ctx.beginPath();
         ctx.arc(bubble.x, bubble.y, bubble.radius, 0, Math.PI * 2);
-        ctx.fillStyle = gradient;
+        ctx.fillStyle = bubbleGradient;
         ctx.fill();
       }
       
@@ -210,8 +202,14 @@ const FluidEmailReveal: React.FC<FluidEmailRevealProps> = ({ email, className = 
     >
       <canvas 
         ref={canvasRef}
-        className="w-full h-full"
+        className="w-full h-full z-10"
       />
+      <div 
+        ref={emailTextRef}
+        className="absolute z-0 text-center font-bold text-2xl select-text"
+      >
+        {email}
+      </div>
     </div>
   );
 };
