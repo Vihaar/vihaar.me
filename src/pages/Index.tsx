@@ -30,19 +30,16 @@ const Index: React.FC = () => {
   return (
     <ThemeProvider>
       <div className="relative min-h-screen">
-        <div className="fixed inset-0 -z-10">
-          <AnimatedGradientBackground interactive={true} className="w-full h-full opacity-40" />
-        </div>
         <CursorEffect />
         <Navbar />
-        <main>
+        <main className="relative z-10">
           <div ref={heroRef} id="home">
             <HeroSection />
           </div>
-          <div ref={toolsRef} id="tools">
+          <div ref={toolsRef} id="tools" className="ghibli-card mx-4 md:mx-12 my-8 p-8">
             <ToolsSection />
           </div>
-          <div ref={ctaRef} id="about">
+          <div ref={ctaRef} id="about" className="ghibli-card mx-4 md:mx-12 my-8 p-8">
             <CTASection />
           </div>
         </main>
