@@ -53,9 +53,13 @@ const DoodleJumpGame: React.FC = () => {
   // Load player image
   useEffect(() => {
     const playerImage = new Image();
-    playerImage.src = 'public/lovable-uploads/2cba7e39-9c34-4f6f-ad92-d22e7206d26c.png';
+    playerImage.src = 'public/lovable-uploads/cb50c55b-1318-4eb7-85b5-45911c26b639.png';
     playerImage.onload = () => {
       playerImageRef.current = playerImage;
+      console.log("Player image loaded successfully");
+    };
+    playerImage.onerror = (e) => {
+      console.error("Failed to load player image:", e);
     };
   }, []);
 
@@ -65,6 +69,8 @@ const DoodleJumpGame: React.FC = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
+    console.log("Starting game...");
 
     // Set canvas dimensions based on parent element
     const footerSection = canvas.closest("footer");
@@ -133,6 +139,7 @@ const DoodleJumpGame: React.FC = () => {
       
       gameRef.current.gameActive = true;
       setIsActive(true);
+      console.log("Game initialized with", gameRef.current.platforms.length, "platforms");
       gameLoop();
     }
   };
@@ -239,6 +246,10 @@ const DoodleJumpGame: React.FC = () => {
         width, 
         height
       );
+      
+      // Draw a debug outline around the player hitbox for visibility
+      ctx.strokeStyle = 'rgba(255, 0, 0, 0.5)';
+      ctx.strokeRect(player.x, player.y, player.width, player.height);
     } else {
       // Fallback if image isn't loaded
       ctx.fillStyle = '#8B4513'; // Brown for skin tone

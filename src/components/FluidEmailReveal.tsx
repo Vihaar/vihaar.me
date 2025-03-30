@@ -214,13 +214,13 @@ const FluidEmailReveal: React.FC<FluidEmailRevealProps> = ({
       ref={containerRef} 
       className={`relative rounded-lg overflow-hidden ${className}`}
     >
-      <canvas ref={canvasRef} className="w-full h-full z-10" />
       <div 
         ref={emailTextRef} 
         className="absolute z-0 text-center font-bold text-2xl select-all"
       >
         {email}
       </div>
+      <canvas ref={canvasRef} className="w-full h-full z-10" />
     </div>
   );
 };
