@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 interface FluidPhoneRevealProps {
   phoneNumber: string;
@@ -9,7 +9,6 @@ interface FluidPhoneRevealProps {
 const FluidPhoneReveal: React.FC<FluidPhoneRevealProps> = ({ phoneNumber, className = "" }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isHovering, setIsHovering] = useState(false);
   
   useEffect(() => {
     const container = containerRef.current;
@@ -45,18 +44,9 @@ const FluidPhoneReveal: React.FC<FluidPhoneRevealProps> = ({ phoneNumber, classN
       
       // Set gradient background
       const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      
-      if (isHovering) {
-        // Semi-transparent when hovering
-        gradient.addColorStop(0, 'rgba(139, 92, 246, 0.3)'); // Purple
-        gradient.addColorStop(0.5, 'rgba(14, 165, 233, 0.3)'); // Blue
-        gradient.addColorStop(1, 'rgba(249, 115, 22, 0.3)'); // Orange
-      } else {
-        // More opaque when not hovering
-        gradient.addColorStop(0, 'rgba(139, 92, 246, 0.9)'); // Purple
-        gradient.addColorStop(0.5, 'rgba(14, 165, 233, 0.9)'); // Blue
-        gradient.addColorStop(1, 'rgba(249, 115, 22, 0.9)'); // Orange
-      }
+      gradient.addColorStop(0, 'rgba(139, 92, 246, 0.8)'); // Purple
+      gradient.addColorStop(0.5, 'rgba(14, 165, 233, 0.8)'); // Blue
+      gradient.addColorStop(1, 'rgba(249, 115, 22, 0.8)'); // Orange
       
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -77,16 +67,17 @@ const FluidPhoneReveal: React.FC<FluidPhoneRevealProps> = ({ phoneNumber, classN
     // Handle mouse interaction
     let mouseX = -100;
     let mouseY = -100;
+    let isMouseOver = false;
     
     const handleMouseMove = (e: MouseEvent) => {
       const rect = container.getBoundingClientRect();
       mouseX = e.clientX - rect.left;
       mouseY = e.clientY - rect.top;
-      setIsHovering(true);
+      isMouseOver = true;
     };
     
     const handleMouseLeave = () => {
-      setIsHovering(false);
+      isMouseOver = false;
       mouseX = -100;
       mouseY = -100;
     };
@@ -97,7 +88,7 @@ const FluidPhoneReveal: React.FC<FluidPhoneRevealProps> = ({ phoneNumber, classN
     // Animation loop
     function animate() {
       // Update fluid simulation based on mouse position
-      if (isHovering) {
+      if (isMouseOver) {
         const cellX = Math.floor(mouseX / CELL_SIZE);
         const cellY = Math.floor(mouseY / CELL_SIZE);
         const radius = 4; // Influence radius
@@ -165,7 +156,7 @@ const FluidPhoneReveal: React.FC<FluidPhoneRevealProps> = ({ phoneNumber, classN
       container.removeEventListener('mouseleave', handleMouseLeave);
       cancelAnimationFrame(animationId);
     };
-  }, [phoneNumber, isHovering]);
+  }, [phoneNumber]);
   
   return (
     <div 
@@ -176,9 +167,6 @@ const FluidPhoneReveal: React.FC<FluidPhoneRevealProps> = ({ phoneNumber, classN
         ref={canvasRef}
         className="w-full h-full"
       />
-      <div className="absolute inset-0 flex items-center justify-center z-0 select-all">
-        <span className="text-2xl font-bold">{phoneNumber}</span>
-      </div>
     </div>
   );
 };
