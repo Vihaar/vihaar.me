@@ -46,17 +46,17 @@ const FluidEmailReveal: React.FC<FluidEmailRevealProps> = ({ email, className = 
     
     // Create bubbles - increase the count significantly
     const bubbles: Bubble[] = [];
-    const bubbleCount = 300; // Increased from 100 to 300
+    const bubbleCount = 500; // Increased from 300 to 500 for better coverage
     
     const createBubbles = () => {
       bubbles.length = 0;
       for (let i = 0; i < bubbleCount; i++) {
-        const radius = Math.random() * 18 + 5; // Varied bubble sizes
+        const radius = Math.random() * 20 + 8; // Varied bubble sizes
         const bubble: Bubble = {
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
           radius: radius,
-          color: getRandomColor(0.6),
+          color: getRandomColor(0.7), // More opaque to better hide email
           vx: 0,
           vy: 0
         };
@@ -125,7 +125,7 @@ const FluidEmailReveal: React.FC<FluidEmailRevealProps> = ({ email, className = 
           const dx = bubble.x - mouseX;
           const dy = bubble.y - mouseY;
           const distance = Math.sqrt(dx * dx + dy * dy);
-          const repelRadius = 120; // Increased from 100 to 120
+          const repelRadius = 150; // Increased from 120 to 150
           
           if (distance < repelRadius) {
             // Calculate repulsion force (stronger when closer)
@@ -133,8 +133,8 @@ const FluidEmailReveal: React.FC<FluidEmailRevealProps> = ({ email, className = 
             const angle = Math.atan2(dy, dx);
             
             // Apply force to velocity - increased force multiplier
-            bubble.vx += Math.cos(angle) * force * 3;
-            bubble.vy += Math.sin(angle) * force * 3;
+            bubble.vx += Math.cos(angle) * force * 4;
+            bubble.vy += Math.sin(angle) * force * 4;
           }
         }
         
@@ -206,7 +206,7 @@ const FluidEmailReveal: React.FC<FluidEmailRevealProps> = ({ email, className = 
       />
       <div 
         ref={emailTextRef}
-        className="absolute z-0 text-center font-bold text-2xl select-text"
+        className="absolute z-0 text-center font-bold text-2xl select-all"
       >
         {email}
       </div>

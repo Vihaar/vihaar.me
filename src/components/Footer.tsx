@@ -2,12 +2,13 @@
 import React from "react";
 import { Github, Linkedin, Twitter, Mail } from "lucide-react";
 import DoodleJumpGame from "./DoodleJumpGame";
+import FluidEmailReveal from "./FluidEmailReveal";
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-background py-12 border-t border-border">
+    <footer className="bg-background py-12 border-t border-border relative">
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div>
@@ -16,7 +17,7 @@ const Footer: React.FC = () => {
               Sharing the tools and resources I use to grow my business and help others succeed.
             </p>
           </div>
-          <div>
+          <div className="relative">
             <h4 className="font-heading font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
               <li>
@@ -91,11 +92,19 @@ const Footer: React.FC = () => {
                 <Mail className="h-5 w-5" />
               </a>
             </div>
+            
+            {/* Email Reveal with bubbles */}
+            <div className="mt-4">
+              <p className="text-foreground/70 mb-2">Here's my email. Feel free to contact me about anything, I'd love to help!</p>
+              <div className="h-16">
+                <FluidEmailReveal email="vbnandigala@gmail.com" className="w-full h-full" />
+              </div>
+            </div>
           </div>
         </div>
         
-        {/* Doodle Jump Game */}
-        <div className="mb-8 border border-border rounded-lg overflow-hidden">
+        {/* DoodleJump Game integrated with footer elements */}
+        <div className="relative min-h-[200px]">
           <DoodleJumpGame />
         </div>
         

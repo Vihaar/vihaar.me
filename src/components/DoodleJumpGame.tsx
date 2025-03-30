@@ -5,6 +5,7 @@ interface Platform {
   x: number;
   y: number;
   width: number;
+  element: HTMLElement;
 }
 
 interface Player {
@@ -21,6 +22,8 @@ const DoodleJumpGame: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isActive, setIsActive] = useState(false);
   const [score, setScore] = useState(0);
+  const playerImageRef = useRef<HTMLImageElement | null>(null);
+  
   const gameRef = useRef<{
     player: Player;
     platforms: Platform[];
@@ -36,7 +39,7 @@ const DoodleJumpGame: React.FC = () => {
       velocityY: 0,
       velocityX: 0,
       width: 30,
-      height: 40,
+      height: 50,
       isJumping: false,
     },
     platforms: [],
@@ -47,6 +50,15 @@ const DoodleJumpGame: React.FC = () => {
     gameAreaWidth: 0,
   });
 
+  // Load player image
+  useEffect(() => {
+    const playerImage = new Image();
+    playerImage.src = 'public/lovable-uploads/4157d1bc-af23-45a6-afb1-b96ba4a7b8b1.png';
+    playerImage.onload = () => {
+      playerImageRef.current = playerImage;
+    };
+  }, []);
+
   const startGame = () => {
     if (!canvasRef.current) return;
     
@@ -54,11 +66,11 @@ const DoodleJumpGame: React.FC = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas dimensions based on parent container
-    const footerSection = canvas.parentElement;
+    // Set canvas dimensions based on parent element
+    const footerSection = canvas.closest("footer");
     if (footerSection) {
       canvas.width = footerSection.clientWidth;
-      canvas.height = 300; // Fixed height for the game
+      canvas.height = footerSection.clientHeight - 100; // Leave space for copyright
       
       gameRef.current.gameAreaWidth = canvas.width;
       gameRef.current.gameAreaHeight = canvas.height;
@@ -70,20 +82,37 @@ const DoodleJumpGame: React.FC = () => {
         velocityY: 0,
         velocityX: 0,
         width: 30,
-        height: 40,
+        height: 50,
         isJumping: false,
       };
       
-      // Create initial platforms
+      // Find all link elements in the footer to use as platforms
+      const linkElements = footerSection.querySelectorAll('a');
       gameRef.current.platforms = [];
-      const platformCount = 8;
       
-      for (let i = 0; i < platformCount; i++) {
+      linkElements.forEach(link => {
+        const rect = link.getBoundingClientRect();
+        const footerRect = footerSection.getBoundingClientRect();
+        
         gameRef.current.platforms.push({
-          x: Math.random() * (canvas.width - 80) + 40,
-          y: i === 0 ? canvas.height - 50 : Math.random() * (canvas.height - 50) + 50,
-          width: 60,
+          x: rect.left - footerRect.left,
+          y: rect.top - footerRect.top,
+          width: rect.width,
+          element: link
         });
+      });
+      
+      // Add some additional platforms if needed
+      if (gameRef.current.platforms.length < 5) {
+        const additionalCount = 5 - gameRef.current.platforms.length;
+        for (let i = 0; i < additionalCount; i++) {
+          gameRef.current.platforms.push({
+            x: Math.random() * (canvas.width - 80) + 40,
+            y: Math.random() * (canvas.height - 50) + 50,
+            width: 80,
+            element: document.createElement('div')
+          });
+        }
       }
       
       gameRef.current.gameActive = true;
@@ -104,8 +133,8 @@ const DoodleJumpGame: React.FC = () => {
     
     const { player, platforms, keys } = gameRef.current;
     
-    // Draw background
-    ctx.fillStyle = 'rgba(241, 240, 251, 0.3)';
+    // Draw transparent background
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.01)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     // Update player position based on key presses
@@ -130,6 +159,7 @@ const DoodleJumpGame: React.FC = () => {
     
     // Check if player fell through the bottom
     if (player.y > canvas.height) {
+      // Reset position to the top
       player.y = 0;
       setScore(prevScore => prevScore - 50); // Penalty for falling
     }
@@ -141,29 +171,51 @@ const DoodleJumpGame: React.FC = () => {
         player.x + player.width > platform.x &&
         player.x < platform.x + platform.width &&
         player.y + player.height > platform.y &&
-        player.y + player.height < platform.y + 10
+        player.y + player.height < platform.y + 20
       ) {
         player.velocityY = -8; // Jump velocity
         player.isJumping = true;
         setScore(prevScore => prevScore + 10);
+        
+        // Highlight the platform element when jumped on
+        platform.element.classList.add('text-primary');
+        setTimeout(() => {
+          platform.element.classList.remove('text-primary');
+        }, 300);
       }
     });
     
-    // Draw player - brown Indian character in pajamas
-    ctx.fillStyle = '#8B4513'; // Brown for skin tone
-    ctx.fillRect(player.x, player.y, player.width, player.height - 15); // Body
+    // Draw player using the loaded image
+    if (playerImageRef.current) {
+      const img = playerImageRef.current;
+      // Draw the character at 1/4 the original size
+      const scale = 0.25;
+      const width = img.width * scale;
+      const height = img.height * scale;
+      ctx.drawImage(
+        img, 
+        player.x - width / 2 + player.width / 2, 
+        player.y - height + player.height, 
+        width, 
+        height
+      );
+    } else {
+      // Fallback if image isn't loaded
+      ctx.fillStyle = '#8B4513'; // Brown for skin tone
+      ctx.fillRect(player.x, player.y, player.width, player.height - 15); // Body
+      
+      // Head
+      ctx.beginPath();
+      ctx.arc(player.x + player.width / 2, player.y - 5, 10, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Draw suit (blue)
+      ctx.fillStyle = '#1E40AF';
+      ctx.fillRect(player.x, player.y + player.height - 15, player.width, 15); // Pants
+    }
     
-    // Head
-    ctx.beginPath();
-    ctx.arc(player.x + player.width / 2, player.y - 5, 10, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // Draw pajamas (light blue)
-    ctx.fillStyle = '#ADD8E6';
-    ctx.fillRect(player.x, player.y + player.height - 15, player.width, 15); // Pants
-    
-    // Draw platforms
-    ctx.fillStyle = '#9b87f5'; // Primary purple color
+    // Highlight platforms in game
+    ctx.fillStyle = 'rgba(139, 92, 246, 0.2)'; // Light purple highlight
     platforms.forEach((platform) => {
       ctx.fillRect(platform.x, platform.y, platform.width, 10);
     });
@@ -186,6 +238,7 @@ const DoodleJumpGame: React.FC = () => {
     }
     gameRef.current.gameActive = false;
     setIsActive(false);
+    setScore(0);
   };
 
   useEffect(() => {
@@ -231,19 +284,18 @@ const DoodleJumpGame: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-[300px] overflow-hidden">
+    <div className="w-full h-full relative">
       <canvas 
         ref={canvasRef} 
-        className="w-full h-full cursor-pointer"
-        onClick={() => !isActive ? startGame() : stopGame()}
+        className="absolute inset-0 w-full h-full z-10 pointer-events-none"
       />
       {!isActive && (
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="w-full flex items-center justify-center mt-4">
           <button
             className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors"
             onClick={startGame}
           >
-            Start Doodle Jump!
+            Start Doodle Jump! (Thanks for scrolling to the end)
           </button>
         </div>
       )}
