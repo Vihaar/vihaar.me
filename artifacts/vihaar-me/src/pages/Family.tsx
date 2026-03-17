@@ -4,10 +4,11 @@ import { BackButton } from "@/components/BackButton";
 const W = 420, H = 420;
 
 const MEMBERS = [
-  { name: "Mom",     x: 210, y: 80,  color: "#e91e8c", bodyColor: "#f06292" },
-  { name: "Dad",     x: 340, y: 210, color: "#1976d2", bodyColor: "#42a5f5" },
-  { name: "Vihaar",  x: 210, y: 340, color: "#388e3c", bodyColor: "#66bb6a" },
-  { name: "Sibling", x: 80,  y: 210, color: "#f57c00", bodyColor: "#ffa726" },
+  { name: "Vipul",       x: 210, y: 80,  color: "#e91e8c", bodyColor: "#f06292" },
+  { name: "Vijval",      x: 340, y: 210, color: "#1976d2", bodyColor: "#42a5f5" },
+  { name: "Vihaar",      x: 210, y: 340, color: "#388e3c", bodyColor: "#66bb6a" },
+  { name: "Narasimha",   x: 80,  y: 210, color: "#f57c00", bodyColor: "#ffa726" },
+  { name: "Usha",        x: 370, y: 340, color: "#9b59b6", bodyColor: "#c39bd3" },
 ];
 
 function drawPerson(ctx: CanvasRenderingContext2D, x: number, y: number, name: string, color: string, bodyColor: string, glowing: boolean, size: number) {
@@ -130,6 +131,9 @@ export default function Family() {
     function loop(ts: number) {
       const dt = Math.min((ts - s.lastTime) / 1000, 0.05);
       s.lastTime = ts;
+
+      // Ensure active index is within bounds
+      if (s.activeIdx >= MEMBERS.length) s.activeIdx = MEMBERS.length - 1;
 
       // Animate heart toward active member
       const target = MEMBERS[s.activeIdx];

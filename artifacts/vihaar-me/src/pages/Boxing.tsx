@@ -341,8 +341,8 @@ export default function Boxing() {
         <div className="flex-1 max-w-sm">
           <h1 className="font-display text-7xl text-red-500 mb-4 drop-shadow-[0_0_20px_rgba(239,68,68,0.8)]">Boxing</h1>
           <div className="bg-black/60 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-red-900/40 text-red-100 font-body text-lg leading-relaxed space-y-3">
-            <p><em>Freshman year. 135-lb weight class.</em></p>
-            <p>A broken nose in my first fight vs GVSU. My senior mentor was like an older brother — boxing isn't about anger, it's discipline under the lights.</p>
+            <p><em>One amateur fight, freshman year, 135-pound weight class.</em></p>
+            <p>A broken nose after my fight versus GVSU — that's what I remember most.</p>
             <div className="mt-4 p-3 bg-red-900/30 rounded-xl text-sm">
               <p className="font-bold text-red-300 mb-1">Controls:</p>
               <p>A / ← → Jab</p>

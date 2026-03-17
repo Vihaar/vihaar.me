@@ -300,8 +300,8 @@ export default function Skiing() {
         <div className="flex-1 max-w-sm">
           <h1 className="font-display text-7xl text-blue-900 mb-4 drop-shadow-sm">Skiing</h1>
           <div className="bg-white/65 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-white text-blue-900 font-body text-lg leading-relaxed space-y-3">
-            <p><em>Icy winds, intense focus, the rush of gravity.</em></p>
-            <p>Skiing is where fear and joy co-exist. The mountain demands total presence — every turn a negotiation with speed.</p>
+            <p><em>I started skiing at age 2.</em></p>
+            <p>I grew up skiing my entire life. My whole family — from my mom, dad, and both my brothers — ski. The mountains and slopes were always home.</p>
             <p className="text-sm text-blue-600 mt-4 font-semibold">← → Arrow keys or A / D to dodge</p>
           </div>
         </div>

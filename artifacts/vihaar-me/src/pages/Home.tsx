@@ -14,15 +14,15 @@ interface Chapter {
 }
 
 const CHAPTERS: Chapter[] = [
-  { id: "family",   path: "/family",   title: "Family",            subtitle: "Lake life & roots",       game: "Pass the Love",    cx: 50,  cy: 44, color: "#e67e22" },
-  { id: "skiing",   path: "/skiing",   title: "Skiing",            subtitle: "Fear & joy",              game: "Downhill Dash",    cx: 18,  cy: 22, color: "#3498db" },
-  { id: "boxing",   path: "/boxing",   title: "Boxing",            subtitle: "135-lb weight class",     game: "Punch Out",        cx: 14,  cy: 58, color: "#e74c3c" },
-  { id: "iceland",  path: "/iceland",  title: "Batman Mountain",   subtitle: "Iceland basalt spires",   game: "Basalt Climber",   cx: 30,  cy: 78, color: "#1abc9c" },
-  { id: "marathon", path: "/marathon", title: "Ann Arbor Marathon",subtitle: "26.2 miles of Michigan",  game: "Race Day",         cx: 58,  cy: 82, color: "#f39c12" },
-  { id: "petition", path: "/petition", title: "The Petition",      subtitle: "Paper plates > styrofoam",game: "Sig Drive",        cx: 80,  cy: 68, color: "#9b59b6" },
-  { id: "kitchen",  path: "/kitchen",  title: "Max Cekot Kitchen", subtitle: "Michelin star, Riga",     game: "Plate Up",         cx: 86,  cy: 40, color: "#e67e22" },
-  { id: "tedx",     path: "/tedx",     title: "TEDxYouth",         subtitle: "Finding a voice",         game: "Stage Rhythm",     cx: 66,  cy: 18, color: "#e74c3c" },
-  { id: "acting",   path: "/acting",   title: "Child Actor",       subtitle: "My Step Kids sitcom",     game: "Lights, Camera!",  cx: 38,  cy: 18, color: "#f1c40f" },
+  { id: "family",   path: "/family",   title: "Family",            subtitle: "Lake life & roots",       game: "Pass the Love",      cx: 50,  cy: 44, color: "#e67e22" },
+  { id: "kitchen",  path: "/kitchen",  title: "Michelin star restaurant", subtitle: "Max Cekot, Riga",  game: "Plate Up",           cx: 86,  cy: 40, color: "#e67e22" },
+  { id: "skiing",   path: "/skiing",   title: "Skiing",            subtitle: "Growing up on slopes",    game: "Downhill Dash",      cx: 18,  cy: 22, color: "#3498db" },
+  { id: "boxing",   path: "/boxing",   title: "Boxing",            subtitle: "One amateur fight",       game: "Punch Out",          cx: 14,  cy: 58, color: "#e74c3c" },
+  { id: "iceland",  path: "/iceland",  title: "Iceland",           subtitle: "Rock climbing",          game: "Basalt Climber",     cx: 30,  cy: 78, color: "#1abc9c" },
+  { id: "marathon", path: "/marathon", title: "Ann Arbor Marathon",subtitle: "26.2 miles",             game: "Race Day",           cx: 58,  cy: 82, color: "#f39c12" },
+  { id: "petition", path: "/petition", title: "The Petition",      subtitle: "Styrofoam to paper",     game: "Sig Drive",          cx: 80,  cy: 68, color: "#9b59b6" },
+  { id: "tedx",     path: "/tedx",     title: "TEDxYouth",         subtitle: "Finding a voice",        game: "Think Fast",         cx: 66,  cy: 18, color: "#e74c3c" },
+  { id: "acting",   path: "/acting",   title: "Child Actor",       subtitle: "My Step Kids sitcom",    game: "Lights, Camera!",    cx: 38,  cy: 18, color: "#f1c40f" },
 ];
 
 // Hand-drawn island SVG paths (normalized 0-100 coordinate space, offset by cx/cy)
@@ -297,11 +297,11 @@ export default function Home() {
                         exit={{ opacity: 0, y: 2, scale: 0.9 }}
                         transform={`translate(0,${isFamily ? -22 : -17})`}
                       >
-                        <rect x="-14" y="-11" width="28" height="10" rx="2"
+                        <rect x="-20" y="-11" width="40" height="10" rx="2"
                           fill="#fffcf5" stroke={ch.color} strokeWidth="0.5" filter="url(#shadow)"/>
-                        <text y="-5" textAnchor="middle" fontSize="2.2" fill="#4a2e1b" fontWeight="bold"
+                        <text y="-5" textAnchor="middle" fontSize="2" fill="#4a2e1b" fontWeight="bold"
                           style={{ fontFamily: "'Patrick Hand', cursive" }}>{ch.subtitle}</text>
-                        <text y="-1" textAnchor="middle" fontSize="1.8" fill={ch.color}
+                        <text y="-1" textAnchor="middle" fontSize="1.6" fill={ch.color}
                           style={{ fontFamily: "'Patrick Hand', cursive" }}>▶ {ch.game}</text>
                       </motion.g>
                     )}
@@ -320,7 +320,6 @@ export default function Home() {
         </text>
         <text x="50" y="9" textAnchor="middle" fontSize="2.2"
           fill="#8b6340" style={{ fontFamily: "'Patrick Hand', cursive", fontStyle: "italic" }}>
-          follow the path of my story...
         </text>
 
       </svg>
