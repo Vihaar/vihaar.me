@@ -15,6 +15,7 @@ import Petition from "./pages/Petition";
 import Kitchen from "./pages/Kitchen";
 import Tedx from "./pages/Tedx";
 import Acting from "./pages/Acting";
+import Fundraise2026 from "./pages/Fundraise2026";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,8 @@ function Router() {
         <Route path="/kitchen" component={Kitchen} />
         <Route path="/tedx" component={Tedx} />
         <Route path="/acting" component={Acting} />
+        <Route path="/child-hunger" component={Fundraise2026} />
+        <Route path="/fundraise2026" component={Fundraise2026} />
         <Route component={NotFound} />
       </Switch>
     </AnimatePresence>

@@ -97,7 +97,7 @@ export default function Petition() {
   const [gameState,setGameState]=useState<"idle"|"playing"|"win"|"lose">("idle");
   const [sigs,setSigs]=useState(0);
   const [timeLeft,setTimeLeft]=useState(25);
-  const timerRef=useRef<ReturnType<typeof setInterval>>();
+  const timerRef=useRef<ReturnType<typeof setInterval> | undefined>(undefined);
 
   useEffect(()=>{
     const s=stateRef.current;
@@ -162,7 +162,7 @@ export default function Petition() {
       ctx.fillStyle="#e8e0c8"; ctx.beginPath(); ctx.roundRect(58,36,W-90,8,4); ctx.fill();
       ctx.fillStyle="#9b59b6"; ctx.beginPath(); ctx.roundRect(58,36,barW,8,4); ctx.fill();
       ctx.fillStyle="#e74c3c"; ctx.textAlign="right";
-      ctx.fillText(`⏱ ${s.timeLeft}s`, W-12, 32);
+      ctx.fillText(`TIME ${s.timeLeft}s`, W-12, 32);
       s.frameId=requestAnimationFrame(loop);
     }
     s.frameId=requestAnimationFrame(loop);
@@ -195,13 +195,19 @@ export default function Petition() {
       <div className="relative z-10 flex flex-col md:flex-row h-screen p-6 pt-20 gap-8 max-w-6xl mx-auto items-center">
         <div className="flex-1 max-w-sm">
           <h1 className="font-display text-6xl text-slate-700 mb-4">The Petition</h1>
+          <img
+            src={`${import.meta.env.BASE_URL}images/petition-hero.png`}
+            alt="The Petition hero"
+            className="w-full h-44 object-cover rounded-2xl border-2 border-stone-200 mb-4"
+            draggable={false}
+          />
           <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-xl border-l-4 border-yellow-400 text-slate-700 font-body text-lg leading-relaxed space-y-3">
             <p><em>Walled Lake Western High School.</em></p>
             <p>I petitioned to replace styrofoam trays with paper plates. First try: student signatures. Wrong audience. Second try: parents — and I found sponsors. It passed.</p>
             <div className="mt-3 p-3 bg-purple-50 rounded-xl text-sm">
               <p className="font-bold text-purple-700 mb-1">Collect signatures!</p>
-              <p>🎓 Students = +1 pt</p>
-              <p>👨‍💼 Parents = +5 pts (target them!)</p>
+              <p>Students = +1 pt</p>
+              <p>Parents = +5 pts (target them!)</p>
               <p className="mt-1">WASD / Arrows to move</p>
             </div>
           </div>
@@ -213,13 +219,13 @@ export default function Petition() {
               <div className="absolute inset-0 rounded-2xl bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center gap-4">
                 <p className="text-slate-700 font-display text-4xl">Signature Drive</p>
                 <p className="text-slate-500 font-body">Collect 30 pts in 25 seconds!</p>
-                <p className="text-purple-600 font-body text-sm">Parents = +5 🎯 Students = +1</p>
+                <p className="text-purple-600 font-body text-sm">Parents = +5. Students = +1</p>
                 <button onClick={start} className="px-10 py-4 bg-purple-500 text-white font-display text-3xl rounded-full shadow-lg hover:scale-105 transition-transform">Start!</button>
               </div>
             )}
             {gameState==="win"&&(
               <div className="absolute inset-0 rounded-2xl bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center gap-4">
-                <p className="text-green-600 font-display text-5xl">Petition Passed! 🎉</p>
+                <p className="text-green-600 font-display text-5xl">Petition Passed!</p>
                 <p className="text-slate-600 font-body text-xl">The cafeteria got paper plates!</p>
                 <button onClick={start} className="px-10 py-4 bg-purple-500 text-white font-display text-2xl rounded-full shadow-lg hover:scale-105">Play Again</button>
               </div>

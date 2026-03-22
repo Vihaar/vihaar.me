@@ -299,6 +299,12 @@ export default function Skiing() {
         {/* Story */}
         <div className="flex-1 max-w-sm">
           <h1 className="font-display text-7xl text-blue-900 mb-4 drop-shadow-sm">Skiing</h1>
+          <img
+            src={`${import.meta.env.BASE_URL}images/skiing-hero.png`}
+            alt="Skiing hero"
+            className="w-full h-44 object-cover rounded-2xl border-2 border-stone-200"
+            draggable={false}
+          />
           <div className="bg-white/65 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-white text-blue-900 font-body text-lg leading-relaxed space-y-3">
             <p><em>I started skiing at age 2.</em></p>
             <p>I grew up skiing my entire life. My whole family — from my mom, dad, and both my brothers — ski. The mountains and slopes were always home.</p>

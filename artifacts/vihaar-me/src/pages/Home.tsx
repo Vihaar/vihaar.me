@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -10,19 +10,22 @@ interface Chapter {
   game: string;
   cx: number;
   cy: number;
+  w: number;
+  h: number;
   color: string;
 }
 
+// Coordinates and sizes calibrated to life-map-v2.png (0-100%, larger boxes to cover regions)
 const CHAPTERS: Chapter[] = [
-  { id: "family",   path: "/family",   title: "Family",            subtitle: "Lake life & roots",       game: "Pass the Love",      cx: 50,  cy: 44, color: "#e67e22" },
-  { id: "kitchen",  path: "/kitchen",  title: "Michelin star restaurant", subtitle: "Max Cekot, Riga",  game: "Plate Up",           cx: 86,  cy: 40, color: "#e67e22" },
-  { id: "skiing",   path: "/skiing",   title: "Skiing",            subtitle: "Growing up on slopes",    game: "Downhill Dash",      cx: 18,  cy: 22, color: "#3498db" },
-  { id: "boxing",   path: "/boxing",   title: "Boxing",            subtitle: "One amateur fight",       game: "Punch Out",          cx: 14,  cy: 58, color: "#e74c3c" },
-  { id: "iceland",  path: "/iceland",  title: "Iceland",           subtitle: "Rock climbing",          game: "Basalt Climber",     cx: 30,  cy: 78, color: "#1abc9c" },
-  { id: "marathon", path: "/marathon", title: "Ann Arbor Marathon",subtitle: "26.2 miles",             game: "Race Day",           cx: 58,  cy: 82, color: "#f39c12" },
-  { id: "petition", path: "/petition", title: "The Petition",      subtitle: "Styrofoam to paper",     game: "Sig Drive",          cx: 80,  cy: 68, color: "#9b59b6" },
-  { id: "tedx",     path: "/tedx",     title: "TEDxYouth",         subtitle: "Finding a voice",        game: "Think Fast",         cx: 66,  cy: 18, color: "#e74c3c" },
-  { id: "acting",   path: "/acting",   title: "Child Actor",       subtitle: "My Step Kids sitcom",    game: "Lights, Camera!",    cx: 38,  cy: 18, color: "#f1c40f" },
+  { id: "family",   path: "/family",   title: "Family",            subtitle: "Lake life & roots",       game: "Pass the Love",      cx: 50,  cy: 30, w: 22, h: 26, color: "#e67e22" },
+  { id: "skiing",   path: "/skiing",   title: "Skiing",            subtitle: "Growing up on slopes",    game: "Downhill Dash",      cx: 18,  cy: 28, w: 24, h: 28, color: "#3498db" },
+  { id: "kitchen",  path: "/kitchen",  title: "Michelin star restaurant", subtitle: "Max Cekot, Riga",  game: "Plate Up",           cx: 26,  cy: 50, w: 24, h: 26, color: "#e67e22" },
+  { id: "acting",   path: "/acting",   title: "Child Actor",       subtitle: "My Step Kids sitcom",    game: "Lights, Camera!",    cx: 14,  cy: 78, w: 24, h: 28, color: "#f1c40f" },
+  { id: "boxing",   path: "/boxing",   title: "Boxing",            subtitle: "One amateur fight",       game: "Punch Out",          cx: 38,  cy: 74, w: 24, h: 26, color: "#e74c3c" },
+  { id: "marathon", path: "/marathon", title: "Ann Arbor Marathon",subtitle: "26.2 miles",             game: "Race Day",           cx: 56,  cy: 78, w: 24, h: 26, color: "#f39c12" },
+  { id: "petition", path: "/petition", title: "The Petition",      subtitle: "Styrofoam to paper",     game: "Sig Drive",          cx: 84,  cy: 78, w: 24, h: 26, color: "#9b59b6" },
+  { id: "tedx",     path: "/tedx",     title: "TEDxYouth",         subtitle: "Finding a voice",        game: "Think Fast",         cx: 75,  cy: 44, w: 24, h: 26, color: "#e74c3c" },
+  { id: "iceland",  path: "/iceland",  title: "Iceland",           subtitle: "Rock climbing",          game: "Basalt Climber",     cx: 86,  cy: 26, w: 24, h: 28, color: "#1abc9c" },
 ];
 
 // Hand-drawn island SVG paths (normalized 0-100 coordinate space, offset by cx/cy)
@@ -44,6 +47,98 @@ const BASE = import.meta.env.BASE_URL;
 export default function Home() {
   const [hovered, setHovered] = useState<string | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  const [imageAspectRatio, setImageAspectRatio] = useState<number | null>(null);
+
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => setMousePos({ x: e.clientX, y: e.clientY });
+    window.addEventListener("mousemove", onMove);
+    return () => window.removeEventListener("mousemove", onMove);
+  }, []);
+
+  const hoveredChapter = CHAPTERS.find((c) => c.id === hovered) ?? null;
+  const mapSrc = `${BASE}images/life-map-v2.png`;
+
+  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    setImageAspectRatio(img.naturalWidth / img.naturalHeight);
+  };
+
+  // Picture-book map: image + hover hotspots
+  if (true) {
+    return (
+      <div className="w-full h-screen overflow-hidden bg-[#f5ead6] relative font-body">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div
+            className="relative w-full h-full max-w-full max-h-full"
+            style={imageAspectRatio ? { aspectRatio: imageAspectRatio } : undefined}
+          >
+            <img
+              src={mapSrc}
+              alt="Life Map"
+              className="absolute inset-0 w-full h-full object-contain select-none"
+              draggable={false}
+              onLoad={handleImageLoad}
+            />
+
+            {CHAPTERS.map((ch) => {
+              const isActive = hovered === ch.id;
+              return (
+                <Link
+                  key={ch.id}
+                  href={ch.path}
+                  className="absolute"
+                  style={{
+                    left: `${ch.cx}%`,
+                    top: `${ch.cy}%`,
+                    width: `${ch.w}%`,
+                    height: `${ch.h}%`,
+                    transform: "translate(-50%, -50%)",
+                  }}
+                  onMouseEnter={() => setHovered(ch.id)}
+                  onMouseLeave={() => setHovered(null)}
+                >
+                  <motion.div
+                    className="w-full h-full"
+                    animate={isActive ? { scale: 1.02 } : { scale: 1 }}
+                    transition={{ duration: 0.15 }}
+                    style={{
+                      border: isActive ? `2px dashed ${ch.color}` : "2px dashed transparent",
+                      background: isActive ? `${ch.color}22` : "transparent",
+                      borderRadius: 10,
+                    }}
+                  />
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
+        <AnimatePresence>
+          {hoveredChapter && (
+            <motion.div
+              key={hoveredChapter.id}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 6 }}
+              transition={{ duration: 0.12 }}
+              className="fixed z-50 pointer-events-none px-4 py-3 rounded-lg bg-[#f4f1ea] border-2 border-stone-300 shadow-sm"
+              style={{ left: mousePos.x + 12, top: mousePos.y + 12 }}
+            >
+              <p className="font-display text-sm font-bold text-stone-800">{hoveredChapter.title}</p>
+              <p className="text-xs text-stone-600 mt-1">{hoveredChapter.subtitle}</p>
+              <p
+                className="text-xs mt-2 pt-2 border-t border-stone-300 font-display"
+                style={{ color: hoveredChapter.color }}
+              >
+                {hoveredChapter.game}
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-screen overflow-hidden bg-[#f5ead6] relative font-body">

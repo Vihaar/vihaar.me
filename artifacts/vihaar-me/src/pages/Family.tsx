@@ -120,7 +120,7 @@ export default function Family() {
   const [displayScore, setDisplayScore] = useState(0);
   const [displayTime, setDisplayTime] = useState(30);
   const [gameState, setGameState] = useState<"idle"|"playing"|"over">("idle");
-  const timeIntervalRef = useRef<ReturnType<typeof setInterval>>();
+  const timeIntervalRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
 
   useEffect(() => {
     const s = stateRef.current;
@@ -256,15 +256,21 @@ export default function Family() {
         {/* Story */}
         <div className="flex-1 max-w-sm">
           <h1 className="font-display text-7xl text-amber-300 mb-4 drop-shadow-lg">Family</h1>
+          <img
+            src={`${import.meta.env.BASE_URL}images/family-hero.png`}
+            alt="Family hero"
+            className="w-full h-44 object-cover rounded-2xl border-2 border-stone-200"
+            draggable={false}
+          />
           <div className="bg-black/40 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-amber-900/40 text-amber-50 font-body text-lg leading-relaxed space-y-3">
             <p><em>Growing up in the Michigan suburbs, on a lake.</em></p>
             <p>Home was more than a place — it was a feeling. Every risk I've taken was backed by the unwavering foundation of family.</p>
-            <p className="text-amber-400 text-sm font-semibold mt-4">Click/tap the glowing family member to pass the love! ❤️</p>
+            <p className="text-amber-400 text-sm font-semibold mt-4">Click/tap the glowing family member to pass the love.</p>
           </div>
           {gameState === "playing" && (
             <div className="mt-4 flex gap-4 justify-center">
-              <div className="bg-black/50 px-6 py-3 rounded-2xl text-amber-200 font-display text-2xl">❤️ {displayScore}</div>
-              <div className={`bg-black/50 px-6 py-3 rounded-2xl font-display text-2xl ${displayTime < 10 ? "text-red-400" : "text-amber-200"}`}>⏱ {displayTime}s</div>
+              <div className="bg-black/50 px-6 py-3 rounded-2xl text-amber-200 font-display text-2xl">Love {displayScore}</div>
+              <div className={`bg-black/50 px-6 py-3 rounded-2xl font-display text-2xl ${displayTime < 10 ? "text-red-400" : "text-amber-200"}`}>Time {displayTime}s</div>
             </div>
           )}
         </div>
@@ -278,16 +284,21 @@ export default function Family() {
                 <p className="text-amber-200 font-display text-4xl">Pass the Love</p>
                 <p className="text-amber-400 font-body">Click the glowing family member!</p>
                 <button onClick={start} className="px-10 py-4 bg-amber-500 text-white font-display text-3xl rounded-full shadow-lg hover:scale-105 transition-transform">
-                  Start! ❤️
+                  Start!
                 </button>
               </div>
             )}
             {gameState === "over" && (
               <div className="absolute inset-0 rounded-3xl bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center gap-4">
                 <p className="text-amber-200 font-display text-3xl">Round complete!</p>
-                <p className="text-white font-body text-2xl">You passed love <span className="text-amber-400 font-bold">{displayScore}</span> times 🥹</p>
-                <button onClick={start} className="px-10 py-4 bg-amber-500 text-white font-display text-3xl rounded-full shadow-lg hover:scale-105 transition-transform">
-                  Play Again ❤️
+                <p className="text-white font-body text-2xl">
+                  You passed love <span className="text-amber-400 font-bold">{displayScore}</span> times.
+                </p>
+                <button
+                  onClick={start}
+                  className="px-10 py-4 bg-amber-500 text-white font-display text-3xl rounded-full shadow-lg hover:scale-105 transition-transform"
+                >
+                  Play Again
                 </button>
               </div>
             )}

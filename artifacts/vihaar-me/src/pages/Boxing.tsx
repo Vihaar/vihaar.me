@@ -219,7 +219,7 @@ export default function Boxing() {
         const dmg = 12;
         s.enemyHP = Math.max(0, s.enemyHP - dmg);
         setEnemyHP(s.enemyHP);
-        setMessage("Jab lands! 💥");
+        setMessage("Jab lands!");
         s.enemyState = "hit";
         setTimeout(() => { s.enemyState = "idle"; }, 300);
       } else {
@@ -232,7 +232,7 @@ export default function Boxing() {
         const dmg = 20;
         s.enemyHP = Math.max(0, s.enemyHP - dmg);
         setEnemyHP(s.enemyHP);
-        setMessage("Hook connects! 💥");
+        setMessage("Hook connects!");
         s.enemyState = "hit";
         setTimeout(() => { s.enemyState = "idle"; }, 300);
       } else {
@@ -246,8 +246,8 @@ export default function Boxing() {
 
     if (s.enemyHP <= 0) {
       s.started = false;
-      s.result = "KO! You Win! 🏆";
-      setResult("KO! You Win! 🏆");
+      s.result = "KO! You Win!";
+      setResult("KO! You Win!");
       setGameState("over");
     }
     setTimeout(() => { s.playerState = "idle"; }, 400);
@@ -298,8 +298,8 @@ export default function Boxing() {
           }
           if (s.playerHP <= 0) {
             s.started = false;
-            s.result = "KO'd! Try again 🥊";
-            setResult("KO'd! Try again 🥊");
+            s.result = "KO'd! Try again.";
+            setResult("KO'd! Try again.");
             setGameState("over");
           }
         }
@@ -340,6 +340,12 @@ export default function Boxing() {
         {/* Story */}
         <div className="flex-1 max-w-sm">
           <h1 className="font-display text-7xl text-red-500 mb-4 drop-shadow-[0_0_20px_rgba(239,68,68,0.8)]">Boxing</h1>
+          <img
+            src={`${import.meta.env.BASE_URL}images/boxing-hero.png`}
+            alt="Boxing hero"
+            className="w-full h-44 object-cover rounded-2xl border-2 border-stone-200"
+            draggable={false}
+          />
           <div className="bg-black/60 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-red-900/40 text-red-100 font-body text-lg leading-relaxed space-y-3">
             <p><em>One amateur fight, freshman year, 135-pound weight class.</em></p>
             <p>A broken nose after my fight versus GVSU — that's what I remember most.</p>

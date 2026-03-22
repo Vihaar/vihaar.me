@@ -1,0 +1,48 @@
+{
+  "firstNames": [
+    "Priya", "Rahul", "Ananya", "Arjun", "Neha", "Vikram", "Kavya", "Rohan", "Isha", "Aditya",
+    "Shreya", "Karthik", "Divya", "Ravi", "Meera", "Suresh", "Lakshmi", "Nikhil", "Pooja", "Amit",
+    "Sneha", "Rishabh", "Tanvi", "Vivek", "Anjali", "Sameer", "Kiran", "Riya", "Manish", "Dhruv",
+    "Preeti", "Rajan", "Nandini", "Sanjay", "Aarti", "Deepak", "Sonali", "Rajesh", "Bhavya", "Varun",
+    "Kritika", "Aarav", "Maya", "Dev", "Rhea", "Karan", "Anika", "Vanya", "Armaan", "Ishita",
+    "Aadi", "Kiara", "Reyansh", "Zara", "Arnav", "Myra", "Vihaan", "Arya", "Ayaan", "Saanvi",
+    "Advik", "Anvi", "Ritvik", "Aaradhya", "Vivaan", "Shanaya", "Reyan", "Aarush", "Diya", "Ved",
+    "Navya", "Kabir", "Ishani", "Rudra", "Siya", "Alisha", "Aryan", "Avni", "Atharv", "Khushi",
+    "Prisha", "Sakshi", "Raghav", "Tanya", "Kunal", "Pallavi", "Akash", "Swati", "Ritika", "Harsh",
+    "Nikita", "Abhay", "Komal", "Vishal", "Shruti", "Gaurav", "Mansi", "Kartik", "Anita", "Rohit",
+    "Ashwini", "Siddharth", "Pooja", "Abhishek", "Kriti", "Anil", "Jyoti", "Ramesh", "Sarita", "Vinod",
+    "Sunita", "Praveen", "Geeta", "Manoj", "Kavita", "Suresh", "Lata", "Rajeev", "Usha", "Anand",
+    "Vandana", "Santosh", "Rekha", "Mukesh", "Padmini", "Srinivas", "Lakshmi", "Venkat", "Padma", "Gopal",
+    "James", "Sarah", "Michael", "Emily", "David", "Jessica", "Daniel", "Olivia", "Matthew", "Sophia",
+    "Andrew", "Isabella", "Christopher", "Mia", "Ryan", "Emma", "Kevin", "Ava", "Brian", "Charlotte"
+  ],
+  "lastNames": [
+    "Sharma", "Verma", "Patel", "Reddy", "Singh", "Iyer", "Nair", "Kapoor", "Menon", "Desai",
+    "Joshi", "Pillai", "Rao", "Krishnan", "Bhatt", "Nambiar", "Venkatesh", "Subramanian", "Sundaram",
+    "Banerjee", "Chatterjee", "Mukherjee", "Ghosh", "Bose", "Das", "Sen", "Roy", "Malhotra", "Khanna",
+    "Agarwal", "Mehta", "Saxena", "Tiwari", "Pandey", "Mishra", "Yadav", "Gupta", "Kumar", "Jain",
+    "Shah", "Dubey", "Oberoi", "Kapoor", "Bhatia", "Chopra", "Seth", "Mehra", "Thakur", "Bansal",
+    "Kulkarni", "Rao", "Pillai", "Nair", "Iyer", "Reddy", "Murthy", "Rajan", "Balakrishnan", "Swamy",
+    "Smith", "Johnson", "Williams", "Brown", "Davis", "Garcia", "Martinez", "Rodriguez", "Lee", "Kim"
+  ],
+  "familyNames": [
+    "Sharma", "Patel", "Reddy", "Singh", "Iyer", "Nair", "Kapoor", "Verma", "Gupta", "Rao",
+    "Mehta", "Joshi", "Krishnan", "Bhatt", "Desai", "Banerjee", "Ghosh", "Malhotra", "Agarwal"
+  ],
+  "notes": [
+    "For my nieces", "In memory of Mom", "Kids deserve this", "Happy to help", "Thank you!",
+    "— with love", "Go Vihaar!", "Small but heartfelt", "For the kids", "Proud of you",
+    "Keep going!", "❤️", "From our family", "Every bit helps", "So needed", "Bless you",
+    "In Dad's name", "For a full belly", "Thank you for doing this", "From the crew",
+    "For our kids' future", "Much love", "— S", "Here's to full plates", "You've got this",
+    "In Amma's memory", "For Chennai", "Annadaan 🙏", "Jai ho", "From Bangalore",
+    "For the midday meal", "Chota sa contribution", "From Mumbai", "For full stomachs",
+    "Grateful", "In Nani's name", "Feed them well", "From Delhi", "Every plate counts",
+    "For my village", "— A", "From Hyderabad", "In Thatha's name", "For school kitchens",
+    "Small step", "From Pune", "Full hearts", "— M", "In memory of Papa", "For Andhra",
+    "From Kolkata", "Chalo", "— R", "For Tamil Nadu", "From Ahmedabad", "One meal at a time",
+    "In Dada's name", "From Surat", "For Karnataka", "Namaste", "— K", "From Jaipur",
+    "For Kerala", "In Dadi's memory", "From Lucknow", "Dhanyavaad", "— P", "From the diaspora",
+    "For Gujarat", "From Chandigarh", "Shukriya", "— N", "For the next generation", "Jai hind"
+  ]
+}

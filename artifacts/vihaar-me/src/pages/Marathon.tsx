@@ -174,7 +174,7 @@ export default function Marathon() {
       // Score
       ctx.fillStyle="rgba(255,255,255,0.75)"; ctx.beginPath(); ctx.roundRect(W-140,8,130,34,8); ctx.fill();
       ctx.fillStyle="#3a2010"; ctx.font="bold 16px 'Patrick Hand',cursive"; ctx.textAlign="right";
-      ctx.fillText(`🏃 ${Math.floor(s.score)}m`, W-14, 31);
+      ctx.fillText(`RUN ${Math.floor(s.score)}m`, W-14, 31);
       s.frameId=requestAnimationFrame(loop);
     }
     s.frameId=requestAnimationFrame(loop);
@@ -201,6 +201,12 @@ export default function Marathon() {
       <BackButton />
       <div className="relative z-10 flex flex-col h-screen p-6 pt-20 max-w-3xl mx-auto">
         <h1 className="font-display text-6xl text-orange-900 mb-3">Ann Arbor Marathon</h1>
+        <img
+          src={`${import.meta.env.BASE_URL}images/marathon-hero.png`}
+          alt="Marathon hero"
+          className="w-full h-40 object-cover rounded-2xl border-2 border-stone-200 mb-4"
+          draggable={false}
+        />
         <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-5 shadow-xl border border-orange-200 text-orange-900 font-body text-lg leading-relaxed mb-5">
           <p>26.2 miles through Michigan autumn — every mile a negotiation between your legs saying stop and your heart saying keep going.</p>
           <p className="text-sm mt-2 font-semibold text-orange-700">Space / W / ↑ to jump — dodge cones, puddles & hills!</p>
@@ -218,7 +224,7 @@ export default function Marathon() {
           )}
           {gameState==="dead"&&(
             <div className="absolute inset-0 rounded-2xl bg-orange-900/70 backdrop-blur-sm flex flex-col items-center justify-center gap-4">
-              <p className="text-white font-display text-5xl">DNF 😅</p>
+              <p className="text-white font-display text-5xl">DNF</p>
               <p className="text-orange-100 font-body text-2xl">{score}m completed</p>
               <button onClick={start} className="px-10 py-4 bg-orange-400 text-white font-display text-3xl rounded-full shadow-lg hover:scale-105">Run Again!</button>
             </div>

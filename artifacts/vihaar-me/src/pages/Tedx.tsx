@@ -241,6 +241,12 @@ export default function Tedx() {
       <div className="relative z-10 flex flex-col md:flex-row h-screen p-6 pt-20 gap-8 max-w-6xl mx-auto items-center">
         <div className="flex-1 max-w-sm">
           <h1 className="font-display text-7xl text-red-400 mb-4">TEDxYouth</h1>
+          <img
+            src={`${import.meta.env.BASE_URL}images/tedx-hero.png`}
+            alt="TEDx hero"
+            className="w-full h-44 object-cover rounded-2xl border-2 border-stone-200 mb-4"
+            draggable={false}
+          />
           <div className="bg-black/60 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-red-900/40 text-red-100 font-body text-lg leading-relaxed space-y-3">
             <p><em>I founded a TEDxYouth event.</em></p>
             <p>Years organizing, curating speakers — and more importantly, helping others find their voice under those red letters.</p>

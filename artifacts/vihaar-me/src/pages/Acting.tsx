@@ -250,6 +250,12 @@ export default function Acting() {
       <div className="relative z-10 flex flex-col md:flex-row h-screen p-6 pt-20 gap-8 max-w-6xl mx-auto items-center">
         <div className="flex-1 max-w-sm">
           <h1 className="font-display text-6xl text-yellow-400 mb-4">Child Actor</h1>
+          <img
+            src={`${import.meta.env.BASE_URL}images/child-actor-hero.png`}
+            alt="Child actor hero"
+            className="w-full h-44 object-cover rounded-2xl border-2 border-stone-200 mb-4"
+            draggable={false}
+          />
           <div className="bg-black/60 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-yellow-900/40 text-yellow-100 font-body text-lg leading-relaxed space-y-3">
             <p><em>Between middle school and high school, I spent a year acting.</em></p>
             <p>Modeling, commercials, short films, and a sitcom called "My Step Kids" — a crash course in taking direction under a rolling camera.</p>
@@ -271,14 +277,14 @@ export default function Acting() {
               <div className="absolute inset-0 rounded-2xl bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center gap-4">
                 <p className="text-yellow-400 font-display text-4xl">Director's Game</p>
                 <p className="text-yellow-200 font-body">Only act when the Director says!</p>
-                <button onClick={start} className="px-10 py-4 bg-yellow-600 text-black font-display text-3xl rounded-full shadow-lg hover:scale-105 transition-transform">ACTION! 🎬</button>
+                <button onClick={start} className="px-10 py-4 bg-yellow-600 text-black font-display text-3xl rounded-full shadow-lg hover:scale-105 transition-transform">ACTION!</button>
               </div>
             )}
             {gameState==="over"&&(
               <div className="absolute inset-0 rounded-2xl bg-black/85 backdrop-blur-sm flex flex-col items-center justify-center gap-4">
                 <p className="text-red-400 font-display text-5xl">CUT!</p>
                 <p className="text-yellow-200 font-body text-xl">You nailed <span className="text-yellow-400 font-bold">{score}</span> takes ★</p>
-                <button onClick={start} className="px-10 py-4 bg-yellow-600 text-black font-display text-2xl rounded-full shadow-lg hover:scale-105">Take Two 🎬</button>
+                <button onClick={start} className="px-10 py-4 bg-yellow-600 text-black font-display text-2xl rounded-full shadow-lg hover:scale-105">Take Two</button>
               </div>
             )}
           </div>

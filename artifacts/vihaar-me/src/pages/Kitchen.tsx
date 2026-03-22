@@ -5,10 +5,11 @@ const W = 460, H = 400;
 
 interface Dish { name: string; ingredients: string[]; color: string; }
 const DISHES: Dish[] = [
-  { name: "Duck Confit", ingredients: ["🦆","🌿","🧄","🍷"], color: "#8B0000" },
-  { name: "Sea Bass", ingredients: ["🐟","🍋","🫙","🌱"], color: "#00688B" },
-  { name: "Foie Gras", ingredients: ["🍞","🍇","🫙","🟡"], color: "#8B6914" },
-  { name: "Dessert", ingredients: ["🍫","🍓","🌸","⚪"], color: "#5B0050" },
+  // Ingredient labels are letters (no emoji UI).
+  { name: "Duck Confit", ingredients: ["D", "H", "G", "W"], color: "#8B0000" },
+  { name: "Sea Bass", ingredients: ["F", "L", "S", "H"], color: "#00688B" },
+  { name: "Foie Gras", ingredients: ["B", "G", "S", "Y"], color: "#8B6914" },
+  { name: "Dessert", ingredients: ["C", "B", "F", "W"], color: "#5B0050" },
 ];
 
 interface PlateState { placed: string[]; target: Dish; timeLeft: number; }
@@ -85,7 +86,7 @@ export default function Kitchen() {
   const [score,setScore]=useState(0);
   const [timeLeft,setTimeLeft]=useState(15);
   const [dish,setDish]=useState<Dish>(DISHES[0]);
-  const timerRef=useRef<ReturnType<typeof setInterval>>();
+  const timerRef=useRef<ReturnType<typeof setInterval> | undefined>(undefined);
 
   const getNextDish=()=>DISHES[Math.floor(Math.random()*DISHES.length)];
 
@@ -204,6 +205,12 @@ export default function Kitchen() {
       <div className="relative z-10 flex flex-col md:flex-row h-screen p-6 pt-20 gap-8 max-w-6xl mx-auto items-center">
         <div className="flex-1 max-w-sm">
           <h1 className="font-display text-5xl text-amber-300 mb-4 leading-tight">Max Cekot<br/>Kitchen</h1>
+          <img
+            src={`${import.meta.env.BASE_URL}images/max-cekot-hero.png`}
+            alt="Kitchen hero"
+            className="w-full h-44 object-cover rounded-2xl border-2 border-stone-200 mb-4"
+            draggable={false}
+          />
           <div className="bg-black/60 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-amber-900/40 text-amber-100 font-body text-lg leading-relaxed space-y-3">
             <p><em>Riga, Latvia. The only Michelin star in Latvia at the time.</em></p>
             <p>I came in as a stagière and was quickly promoted. Fine dining taught me that precision and patience are the same thing.</p>

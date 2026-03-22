@@ -1,0 +1,64 @@
+{
+  "base": "/feeding-india",
+  "hero": {
+    "poster": "/feeding-india/hero/poster.webp",
+    "videoMp4": "/feeding-india/hero/video.mp4",
+    "videoWebm": "/feeding-india/hero/video.webm"
+  },
+  "logo": "/feeding-india/logo.svg",
+  "meals": {
+    "vegPohaMilk": "/feeding-india/meals/veg-poha-milk.webp",
+    "rajmaCurryRiceSalad": "/feeding-india/meals/rajma-curry-rice-salad.webp",
+    "blackChanaChaat": "/feeding-india/meals/black-chana-chaat.webp",
+    "stuffedParanthaPickleCurd": "/feeding-india/meals/stuffed-parantha-pickle-curd.webp",
+    "masoorDalBhindiRoti": "/feeding-india/meals/masoor-dal-bhindi-roti.webp",
+    "vegPeasCutletChutney": "/feeding-india/meals/veg-peas-cutlet-chutney.webp",
+    "sabudanaKhichdiMilk": "/feeding-india/meals/sabudana-khichdi-milk.webp",
+    "dryFruitLadduMilk": "/feeding-india/meals/dry-fruit-laddu-milk.webp",
+    "vegVermicelliMilk": "/feeding-india/meals/veg-vermicelli-milk.webp",
+    "vegSoyabeanPulaoRaita": "/feeding-india/meals/veg-soyabean-pulao-raita.webp",
+    "pavBhaji": "/feeding-india/meals/pav-bhaji.webp"
+  },
+  "programs": {
+    "dailyFeedingProgram": "/feeding-india/programs/daily-feeding-program.webp",
+    "anganwadiProgram": "/feeding-india/programs/anganwadi-program.webp"
+  },
+  "stories": {
+    "quotes": "/feeding-india/stories/quotes.png",
+    "vanshitBoxing": "/feeding-india/stories/vanshit-boxing.webp",
+    "prothamaOmFoundation": "/feeding-india/stories/prothama-om-foundation.webp",
+    "renuRootsFoundation": "/feeding-india/stories/renu-roots-foundation.webp"
+  },
+  "map": {
+    "indiaRegions": "/feeding-india/map/india-regions.svg"
+  },
+  "impact": {
+    "illustration": "/feeding-india/impact/illustration.webp",
+    "zomatoLogo": "/feeding-india/impact/zomato-logo.webp",
+    "blinkitLogo": "/feeding-india/impact/blinkit-logo.webp"
+  },
+  "blogs": {
+    "bridgingNutritionalGap": "/feeding-india/blogs/bridging-nutritional-gap.webp",
+    "anaemiaMuktBharat": "/feeding-india/blogs/anaemia-mukt-bharat.webp",
+    "budgetHighlights": "/feeding-india/blogs/budget-highlights.webp"
+  },
+  "social": {
+    "facebook": "/feeding-india/social/facebook.svg",
+    "instagram": "/feeding-india/social/instagram.svg",
+    "xLogo": "/feeding-india/social/x-logo.svg",
+    "linkedin": "/feeding-india/social/linkedin.svg",
+    "youtube": "/feeding-india/social/youtube.svg"
+  },
+  "carousel": [
+    "/feeding-india/carousel/ring-1.webp",
+    "/feeding-india/carousel/ring-2.webp",
+    "/feeding-india/carousel/ring-3.webp",
+    "/feeding-india/carousel/ring-4.webp",
+    "/feeding-india/carousel/ring-5.webp",
+    "/feeding-india/carousel/ring-6.webp",
+    "/feeding-india/carousel/ring-7.webp",
+    "/feeding-india/carousel/ring-8.webp",
+    "/feeding-india/carousel/ring-9.webp"
+  ],
+  "ogImage": "/feeding-india/og-image.webp"
+}

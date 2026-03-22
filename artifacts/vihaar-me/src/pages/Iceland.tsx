@@ -168,6 +168,12 @@ export default function Iceland() {
       <div className="relative z-10 flex flex-col md:flex-row h-screen p-6 pt-20 gap-8 max-w-6xl mx-auto items-center">
         <div className="flex-1 max-w-sm">
           <h1 className="font-display text-5xl text-teal-300 mb-4 leading-tight">Batman<br/>Mountain</h1>
+          <img
+            src={`${import.meta.env.BASE_URL}images/batman-mountain-hero.png`}
+            alt="Batman Mountain hero"
+            className="w-full h-44 object-cover rounded-2xl border-2 border-stone-200"
+            draggable={false}
+          />
           <div className="bg-black/60 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-teal-900/40 text-teal-100 font-body text-lg leading-relaxed space-y-3">
             <p><em>Iceland, basalt spires, free soloing.</em></p>
             <p>Locals called them "Batman Mountain" — towering hexagonal columns. Free soloing required total focus and trust in your hands.</p>
@@ -190,7 +196,7 @@ export default function Iceland() {
             )}
             {gameState==="win"&&(
               <div className="absolute inset-0 rounded-2xl bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center gap-4">
-                <p className="text-teal-300 font-display text-5xl">Summit! 🏔</p>
+                <p className="text-teal-300 font-display text-5xl">Summit!</p>
                 <p className="text-white font-body text-xl">You reached the top!</p>
                 <button onClick={start} className="px-10 py-4 bg-teal-600 text-white font-display text-2xl rounded-full shadow-lg hover:scale-105">Climb Again</button>
               </div>
