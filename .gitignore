@@ -47,6 +47,7 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+.replit-artifact/
 
 # Env (secrets, local Stripe keys)
 .env
