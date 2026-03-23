@@ -209,25 +209,6 @@ export default function Acting() {
       ctx.fillStyle="rgba(0,0,0,0.6)"; ctx.beginPath(); ctx.roundRect(10,10,130,42,10); ctx.fill();
       ctx.fillStyle="#ffd700"; ctx.font="bold 18px 'Patrick Hand',cursive"; ctx.textAlign="left";
       ctx.fillText(`★ ${s.score} takes`, 20,36);
-      // Action buttons row
-      const btnY=H-16, bw=60, gap=8;
-      const totalW=ACTIONS.length*(bw+gap)-gap;
-      const startX=(W-totalW)/2;
-      ACTIONS.forEach((a,i)=>{
-        const bx=startX+i*(bw+gap);
-        const c=ACTION_MAP[a];
-        ctx.fillStyle=s.currentAction===a?c.color:"rgba(40,20,10,0.7)";
-        ctx.shadowColor=s.currentAction===a?c.color:"transparent";
-        ctx.shadowBlur=s.currentAction===a?8:0;
-        ctx.beginPath(); ctx.roundRect(bx,btnY-28,bw,28,8); ctx.fill();
-        ctx.shadowBlur=0;
-        ctx.strokeStyle=c.color; ctx.lineWidth=1.5; ctx.beginPath(); ctx.roundRect(bx,btnY-28,bw,28,8); ctx.stroke();
-        ctx.fillStyle=s.currentAction===a?"white":c.color;
-        ctx.font="bold 10px 'Patrick Hand',cursive"; ctx.textAlign="center";
-        ctx.fillText(c.label, bx+bw/2, btnY-10);
-        ctx.fillStyle="rgba(255,255,255,0.4)"; ctx.font="9px monospace";
-        ctx.fillText(`[${c.key.toUpperCase()}]`, bx+bw/2, btnY-1);
-      });
       s.frameId=requestAnimationFrame(loop);
     }
     s.frameId=requestAnimationFrame(loop);
@@ -289,12 +270,13 @@ export default function Acting() {
             )}
           </div>
           {gameState==="playing"&&(
-            <div className="flex gap-2 flex-wrap justify-center">
+            <div className="flex gap-2 flex-wrap justify-center max-w-[480px]">
               {ACTIONS.map(a=>(
                 <button key={a} onClick={()=>doAction(a)}
-                  className="px-4 py-3 font-display text-lg rounded-2xl border-2 hover:scale-105 active:scale-95 transition-transform"
+                  className="px-4 py-3 font-display text-lg rounded-2xl border-2 hover:scale-105 active:scale-95 transition-transform flex flex-col items-center leading-tight min-w-[7.5rem]"
                   style={{background:ACTION_MAP[a].color+"33",borderColor:ACTION_MAP[a].color,color:ACTION_MAP[a].color}}>
-                  {ACTION_MAP[a].label}
+                  <span>{ACTION_MAP[a].label}</span>
+                  <span className="text-xs font-mono opacity-70 mt-0.5">[{ACTION_MAP[a].key.toUpperCase()}]</span>
                 </button>
               ))}
             </div>

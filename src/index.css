@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    overflow-x: hidden;
+    background: #f5efe6;
+    color: #292524;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Patrick Hand', cursive;
+  }
+
+  ::selection {
+    background: rgba(180, 83, 9, 0.25);
+    color: #1c1917;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f5efe6;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #d6d3d1;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a8a29e;
+  }
+}

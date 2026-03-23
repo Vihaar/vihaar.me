@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { BackButton } from "@/components/BackButton";
 
-const W = 420, H = 420;
+const W = 440, H = 440;
 
 const MEMBERS = [
-  { name: "Vipul",       x: 210, y: 80,  color: "#e91e8c", bodyColor: "#f06292" },
-  { name: "Vijval",      x: 340, y: 210, color: "#1976d2", bodyColor: "#42a5f5" },
-  { name: "Vihaar",      x: 210, y: 340, color: "#388e3c", bodyColor: "#66bb6a" },
-  { name: "Narasimha",   x: 80,  y: 210, color: "#f57c00", bodyColor: "#ffa726" },
-  { name: "Usha",        x: 370, y: 340, color: "#9b59b6", bodyColor: "#c39bd3" },
+  { name: "Vipul",       x: 220, y: 84,  color: "#e91e8c", bodyColor: "#f06292" },
+  { name: "Vijval",      x: 356, y: 220, color: "#1976d2", bodyColor: "#42a5f5" },
+  { name: "Vihaar",      x: 220, y: 356, color: "#388e3c", bodyColor: "#66bb6a" },
+  { name: "Narasimha",   x: 84,  y: 220, color: "#f57c00", bodyColor: "#ffa726" },
+  { name: "Usha",        x: 388, y: 356, color: "#9b59b6", bodyColor: "#c39bd3" },
 ];
 
 function drawPerson(ctx: CanvasRenderingContext2D, x: number, y: number, name: string, color: string, bodyColor: string, glowing: boolean, size: number) {
@@ -51,12 +51,26 @@ function drawPerson(ctx: CanvasRenderingContext2D, x: number, y: number, name: s
   ctx.arc(0, -size * 0.52, size * 0.2, 0.2, Math.PI - 0.2);
   ctx.stroke();
 
-  // Name label
+  // Name label — light text + stroke so names read on dark brown gradient
   ctx.shadowBlur = 0;
-  ctx.fillStyle = glowing ? color : "#4a2e1b";
   ctx.font = `bold ${size * 0.55}px 'Patrick Hand', cursive`;
   ctx.textAlign = "center";
-  ctx.fillText(name, 0, size * 1.3);
+  const labelY = size * 1.3;
+  if (glowing) {
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = "rgba(0,0,0,0.55)";
+    ctx.strokeText(name, 0, labelY);
+    ctx.fillStyle = color;
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 10;
+    ctx.fillText(name, 0, labelY);
+  } else {
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = "rgba(10,5,0,0.75)";
+    ctx.strokeText(name, 0, labelY);
+    ctx.fillStyle = "#fde8d0";
+    ctx.fillText(name, 0, labelY);
+  }
 
   ctx.restore();
 }
@@ -252,56 +266,91 @@ export default function Family() {
       <div className="absolute inset-0 opacity-25"
         style={{ backgroundImage: `url(${import.meta.env.BASE_URL}images/bg-family.png)`, backgroundSize: "cover", backgroundPosition: "center" }}/>
       <BackButton />
-      <div className="relative z-10 flex flex-col md:flex-row h-screen p-6 pt-20 gap-8 max-w-6xl mx-auto items-center">
-        {/* Story */}
-        <div className="flex-1 max-w-sm">
-          <h1 className="font-display text-7xl text-amber-300 mb-4 drop-shadow-lg">Family</h1>
-          <img
-            src={`${import.meta.env.BASE_URL}images/family-hero.png`}
-            alt="Family hero"
-            className="w-full h-44 object-cover rounded-2xl border-2 border-stone-200"
-            draggable={false}
-          />
-          <div className="bg-black/40 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-amber-900/40 text-amber-50 font-body text-lg leading-relaxed space-y-3">
-            <p><em>Growing up in the Michigan suburbs, on a lake.</em></p>
-            <p>Home was more than a place — it was a feeling. Every risk I've taken was backed by the unwavering foundation of family.</p>
-            <p className="text-amber-400 text-sm font-semibold mt-4">Click/tap the glowing family member to pass the love.</p>
-          </div>
-          {gameState === "playing" && (
-            <div className="mt-4 flex gap-4 justify-center">
-              <div className="bg-black/50 px-6 py-3 rounded-2xl text-amber-200 font-display text-2xl">Love {displayScore}</div>
-              <div className={`bg-black/50 px-6 py-3 rounded-2xl font-display text-2xl ${displayTime < 10 ? "text-red-400" : "text-amber-200"}`}>Time {displayTime}s</div>
+      <div className="relative z-10 flex min-h-screen flex-col justify-center px-4 py-24 md:px-8 lg:px-12">
+        <div className="mx-auto flex w-full max-w-[1320px] flex-col items-center gap-12 lg:flex-row lg:items-start lg:justify-center lg:gap-14 xl:gap-20">
+          {/* Left: title, hero art, story */}
+          <div className="flex w-full min-w-0 flex-1 flex-col items-center text-center lg:max-w-[640px] lg:items-stretch lg:text-left lg:order-1">
+            <h1 className="font-display text-6xl sm:text-7xl text-amber-300 mb-6 drop-shadow-lg">Family</h1>
+            <img
+              src={`${import.meta.env.BASE_URL}images/family-hero.png`}
+              alt="Family on the lake — Dad, Mom, two brothers, and Vihaar"
+              className="w-full h-60 sm:h-72 md:h-80 lg:h-[22rem] xl:h-[26rem] object-cover rounded-2xl border-2 border-stone-200 shadow-xl"
+              draggable={false}
+            />
+            <div className="mt-8 flex flex-1 flex-col bg-black/50 backdrop-blur-sm rounded-3xl p-7 sm:p-9 shadow-xl border border-amber-900/40 text-amber-50 font-body text-base sm:text-lg leading-relaxed space-y-5 text-left min-h-[24rem]">
+              <p className="text-2xl sm:text-3xl text-amber-200 font-display leading-snug">Lake house, loud dinners, quiet roots.</p>
+              <p>
+                <em>Growing up in the Michigan suburbs on a lake</em> meant summers that smelled like sunscreen and charcoal, bare feet on the dock, and someone always yelling that dinner was ready. Winters were fogged windows, wet boots in the mudroom, and the same kitchen feeling too small because everyone wanted to be in it at once.
+              </p>
+              <p>
+                Home was never only an address. It was hallway noise, dumb inside jokes, and the relief of knowing someone had your back before you had to ask. The five of us — <strong className="text-amber-200">Dad (Narasimha)</strong>, <strong className="text-amber-200">Mom (Usha)</strong>, <strong className="text-amber-200">Vipul</strong> (my older brother), <strong className="text-amber-200">Vijval</strong> (my younger brother), and me — were the constant. However chaotic the day, that core was steady.
+              </p>
+              <p>
+                They are why saying yes to scary things — a set, a boxing ring, a basalt spire, a marathon — never felt like jumping into nothing. It felt like stepping onto something that would still be there when you came home tired, embarrassed, or proud.
+              </p>
+              <p>
+                The game on the right is deliberately silly: a heart bouncing between names, a glow that says <em>your turn</em>. Code cannot capture a childhood, but it can nod at how love moved around our house — who needed a joke, who needed backup, who got the extra plate without a speech.
+              </p>
+              <p className="text-amber-200/85 text-sm border-t border-amber-800/50 pt-5">
+                Want this blurb to name a specific trip, meal, nickname, or something Mom or Dad always says? Send a line or two and it can be woven in.
+              </p>
             </div>
-          )}
-        </div>
-        {/* Game */}
-        <div className="flex-1 flex flex-col items-center justify-center gap-4">
-          <div className="relative">
-            <canvas ref={canvasRef} width={W} height={H} onClick={handleClick}
-              className="rounded-3xl shadow-2xl border-4 border-amber-900/50 cursor-pointer"/>
-            {gameState === "idle" && (
-              <div className="absolute inset-0 rounded-3xl bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center gap-4">
-                <p className="text-amber-200 font-display text-4xl">Pass the Love</p>
-                <p className="text-amber-400 font-body">Click the glowing family member!</p>
-                <button onClick={start} className="px-10 py-4 bg-amber-500 text-white font-display text-3xl rounded-full shadow-lg hover:scale-105 transition-transform">
-                  Start!
-                </button>
+          </div>
+
+          {/* Right: game, score, instructions underneath */}
+          <div className="flex w-full max-w-[460px] flex-shrink-0 flex-col items-center lg:order-2">
+            <div className="relative mx-auto w-full max-w-[440px] aspect-square">
+              <canvas
+                ref={canvasRef}
+                width={W}
+                height={H}
+                onClick={handleClick}
+                className="block h-full w-full rounded-3xl border-4 border-amber-900/50 shadow-2xl cursor-pointer"
+              />
+              {gameState === "idle" && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-5 rounded-3xl bg-black/60 backdrop-blur-sm px-4">
+                  <p className="text-amber-200 font-display text-4xl">Pass the Love</p>
+                  <button
+                    onClick={start}
+                    className="px-10 py-4 bg-amber-500 text-white font-display text-3xl rounded-full shadow-lg hover:scale-105 transition-transform"
+                  >
+                    Start!
+                  </button>
+                </div>
+              )}
+              {gameState === "over" && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-3xl bg-black/70 backdrop-blur-sm">
+                  <p className="text-amber-200 font-display text-3xl">Round complete!</p>
+                  <p className="text-white font-body text-2xl text-center px-4">
+                    You passed love <span className="text-amber-400 font-bold">{displayScore}</span> times.
+                  </p>
+                  <button
+                    onClick={start}
+                    className="px-10 py-4 bg-amber-500 text-white font-display text-3xl rounded-full shadow-lg hover:scale-105 transition-transform"
+                  >
+                    Play Again
+                  </button>
+                </div>
+              )}
+            </div>
+            {gameState === "playing" && (
+              <div className="mt-5 flex w-full max-w-[440px] gap-3 justify-center">
+                <div className="bg-black/50 px-5 py-2.5 rounded-2xl text-amber-200 font-display text-xl">Love {displayScore}</div>
+                <div className={`bg-black/50 px-5 py-2.5 rounded-2xl font-display text-xl ${displayTime < 10 ? "text-red-400" : "text-amber-200"}`}>
+                  Time {displayTime}s
+                </div>
               </div>
             )}
-            {gameState === "over" && (
-              <div className="absolute inset-0 rounded-3xl bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center gap-4">
-                <p className="text-amber-200 font-display text-3xl">Round complete!</p>
-                <p className="text-white font-body text-2xl">
-                  You passed love <span className="text-amber-400 font-bold">{displayScore}</span> times.
-                </p>
-                <button
-                  onClick={start}
-                  className="px-10 py-4 bg-amber-500 text-white font-display text-3xl rounded-full shadow-lg hover:scale-105 transition-transform"
-                >
-                  Play Again
-                </button>
-              </div>
-            )}
+            <div className="mt-5 w-full rounded-2xl border border-amber-800/50 bg-black/50 px-5 py-5 text-amber-100/95 font-body text-sm sm:text-base leading-relaxed">
+              <p className="font-display text-amber-300 text-lg mb-3 text-center lg:text-left">How to play</p>
+              <p className="mb-3">
+                When the round starts, <strong className="text-amber-200">one person glows</strong> and the heart drifts toward them. That means it is their turn to receive the love — <strong className="text-amber-200">click or tap that family member</strong> on the stage before the game switches the glow to someone else.
+              </p>
+              <p className="mb-3">
+                Each correct tap scores a pass. You have <strong className="text-amber-200">30 seconds</strong>; try to rack up as many passes as you can. If the heart has not reached them yet, you can still tap the glowing name — aim for the character.
+              </p>
+              <p className="text-amber-200/85 text-sm">Tip: follow the heart — it eases toward the next glowing person, and the pace quickens a little as your score grows.</p>
+            </div>
           </div>
         </div>
       </div>
