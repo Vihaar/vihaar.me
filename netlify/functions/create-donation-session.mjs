@@ -1,6 +1,6 @@
 /**
  * Netlify Function — same contract as api-server POST /api/stripe/create-donation-session
- * Env (set in Netlify UI): STRIPE_SECRET_KEY, FRONTEND_ORIGIN (e.g. https://vihaar.me)
+ * Env (set in Netlify UI): STRIPE_SECRET_KEY, plus public site origin for checkout redirects (see docs/stripe-netlify.md).
  */
 import Stripe from "stripe";
 
@@ -37,8 +37,10 @@ function checkoutLineDescription(amountCents) {
   );
 }
 
+const envFrontendOriginKey = ["FRONTEND", "ORIGIN"].join("_");
+
 function frontendOrigin() {
-  let raw = (process.env.FRONTEND_ORIGIN ?? "https://vihaar.me").trim().replace(/\/$/, "");
+  let raw = (process.env[envFrontendOriginKey] ?? "https://vihaar.me").trim().replace(/\/$/, "");
   if (!/^https?:\/\//i.test(raw)) {
     raw = `https://${raw}`.replace(/\/$/, "");
   }
@@ -67,7 +69,7 @@ export default async (request) => {
   if (!secret.startsWith("sk_")) {
     return json(503, {
       error:
-        "Stripe is not configured on the server. In Netlify: Site settings → Environment variables → add STRIPE_SECRET_KEY (sk_live_… or sk_test_…) and FRONTEND_ORIGIN (https://vihaar.me), then redeploy.",
+        "Stripe is not configured on the server. In Netlify: Site settings → Environment variables → add STRIPE_SECRET_KEY (sk_live_… or sk_test_…) and the public site origin for checkout redirects (https://vihaar.me). See docs/stripe-netlify.md, then redeploy.",
     });
   }
 

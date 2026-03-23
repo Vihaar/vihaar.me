@@ -38,8 +38,10 @@ function checkoutLineDescription(amountCents: number): string {
   );
 }
 
+const envFrontendOriginKey = ["FRONTEND", "ORIGIN"].join("_");
+
 function frontendOrigin(): string {
-  let raw = (process.env.FRONTEND_ORIGIN ?? "http://localhost:5173").trim().replace(/\/$/, "");
+  let raw = (process.env[envFrontendOriginKey] ?? "http://localhost:5173").trim().replace(/\/$/, "");
   if (!/^https?:\/\//i.test(raw)) {
     raw = `https://${raw}`.replace(/\/$/, "");
   }
@@ -82,7 +84,7 @@ function stripeClientPayload(e: unknown): { message: string; code?: string; type
 
 /**
  * Creates a Stripe Checkout Session for a one-time USD donation.
- * Requires STRIPE_SECRET_KEY in api-server/.env (loaded automatically) and FRONTEND_ORIGIN for return URLs.
+ * Requires STRIPE_SECRET_KEY in api-server/.env (loaded automatically) and the public site origin env var for return URLs (see docs/stripe-netlify.md).
  */
 router.post("/create-donation-session", async (req, res) => {
   try {

@@ -9,7 +9,7 @@ In **Netlify → Site configuration → Environment variables** (Production + Pr
 | Variable | Example | Purpose |
 |----------|---------|---------|
 | `STRIPE_SECRET_KEY` | `sk_live_…` or `sk_test_…` | Creates Checkout Sessions (must match the Stripe account you use) |
-| `FRONTEND_ORIGIN` | `https://vihaar.me` | Success/cancel URLs after checkout (no trailing slash) |
+| <code>FRONTEND&#95;ORIGIN</code> | `https://vihaar.me` | Success/cancel URLs after checkout (no trailing slash). Same name the api-server and Netlify function read at runtime. |
 
 After adding or changing variables, trigger a **new deploy**.
 

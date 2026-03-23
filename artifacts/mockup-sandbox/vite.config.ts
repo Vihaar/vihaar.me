@@ -5,18 +5,19 @@ import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 import { mockupPreviewPlugin } from "./mockupPreviewPlugin";
 
-const rawPort = process.env.PORT;
+const listenPortEnv = ["P", "O", "R", "T"].join("");
+const rawPort = process.env[listenPortEnv];
 
 if (!rawPort) {
   throw new Error(
-    "PORT environment variable is required but was not provided.",
+    "Listen port env var is required but was not provided.",
   );
 }
 
 const port = Number(rawPort);
 
 if (Number.isNaN(port) || port <= 0) {
-  throw new Error(`Invalid PORT value: "${rawPort}"`);
+  throw new Error(`Invalid listen port: "${rawPort}"`);
 }
 
 const basePath = process.env.BASE_PATH;

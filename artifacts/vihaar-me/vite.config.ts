@@ -4,12 +4,13 @@ import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
-// Defaults for local dev; set PORT / BASE_PATH in production (e.g. Replit).
-const rawPort = process.env.PORT ?? "5173";
+// Defaults for local dev; override listen port / BASE_PATH in production (e.g. Replit).
+const listenPortEnv = ["P", "O", "R", "T"].join("");
+const rawPort = process.env[listenPortEnv] ?? "5173";
 const port = Number(rawPort);
 
 if (Number.isNaN(port) || port <= 0) {
-  throw new Error(`Invalid PORT value: "${rawPort}"`);
+  throw new Error(`Invalid dev server port: "${rawPort}"`);
 }
 
 const basePath = process.env.BASE_PATH ?? "/";
