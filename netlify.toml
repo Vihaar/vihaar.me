@@ -5,3 +5,14 @@
 
 [build.environment]
   NODE_VERSION = "22"
+
+# SPA: client-side routes (e.g. /fundraise2026) must serve index.html or direct loads 404
+[[redirects]]
+  from = "/Fundraise2026"
+  to = "/fundraise2026"
+  status = 301
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
