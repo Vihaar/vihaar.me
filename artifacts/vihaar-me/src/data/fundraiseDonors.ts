@@ -10,7 +10,7 @@ export type FundraiseDonorRow = {
 
 export const FUNDRAISE_DONORS = [
   { primary: "Pankaj Chaddah", note: "For every child who deserves a full plate", amountCents: 500000, donatedAt: "2026-03-15T23:00:17.400Z" },
-  { primary: "Ramesh Kumar", note: "Annadaan — feeding is sacred", amountCents: 123400, donatedAt: "2026-03-15T22:00:30.800Z" },
+  { primary: "Ramesh Kumar", note: "Annadaan — feeding is sacred", amountCents: 200000, donatedAt: "2026-03-15T22:00:30.800Z" },
   { primary: "Vihaar Nandigala", note: "Go team! 🙏", amountCents: 100000, donatedAt: "2026-03-15T21:00:44.200Z" },
   { primary: "Sunita Bose", note: "Small step", amountCents: 100, donatedAt: "2026-03-15T20:00:57.601Z" },
   { primary: "Ethan Halpern", secondary: "trees", amountCents: 500, donatedAt: "2026-03-15T19:01:11.001Z" },

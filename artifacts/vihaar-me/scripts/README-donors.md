@@ -4,7 +4,7 @@
 
 Team Trees style: varied names (Anonymous, Indian names, groups, teams), custom messages, 1 tree = 10 meals.
 
-**Top 3:** Pankaj Chaddah (50,000 meals), Ramesh Kumar (12,340 meals), Vihaar Nandigala (10,000 meals).
+**Top 3:** Pankaj Chaddah (50,000 meals), Ramesh Kumar (20,000 meals), Vihaar Nandigala (10,000 meals).
 
 **Schema (each donor):**
 ```json

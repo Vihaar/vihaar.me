@@ -2,7 +2,7 @@
 /**
  * Build donors-wall.json — Team Trees style with Indian names.
  * LLM-authored names + messages. Preserves timestamps.
- * Top 3: Pankaj Chaddah 50k meals, Ramesh Kumar 12,340, Vihaar Nandigala 10k.
+ * Top 3: Pankaj Chaddah 50k meals, Ramesh Kumar 20k, Vihaar Nandigala 10k.
  */
 import { readFileSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
@@ -14,7 +14,7 @@ const timestamps = JSON.parse(readFileSync("/tmp/donor-timestamps.json", "utf-8"
 const TARGET = 3225300;
 const TOP3 = [
   { primary: "Pankaj Chaddah", amountCents: 500000, note: "For every child who deserves a full plate" },
-  { primary: "Ramesh Kumar", amountCents: 123400, note: "Annadaan — feeding is sacred" },
+  { primary: "Ramesh Kumar", amountCents: 200000, note: "Annadaan — feeding is sacred" },
   { primary: "Vihaar Nandigala", amountCents: 100000, note: "Go team! 🙏" },
 ];
 
@@ -211,7 +211,7 @@ const AMOUNT_PATTERN = [
 ];
 
 const N = 4000;
-const REST_SUM = TARGET - 500000 - 123400 - 100000;
+const REST_SUM = TARGET - 500000 - 200000 - 100000;
 
 // Build amounts for donors 4–4000
 let amounts = [];
