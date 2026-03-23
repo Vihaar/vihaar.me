@@ -6,6 +6,13 @@
 [build.environment]
   NODE_VERSION = "22"
 
+# Stripe Checkout API (serverless) — must be before SPA catch-all
+[[redirects]]
+  from = "/api/stripe/create-donation-session"
+  to = "/.netlify/functions/create-donation-session"
+  status = 200
+  force = true
+
 # SPA: client-side routes (e.g. /fundraise2026) must serve index.html or direct loads 404
 [[redirects]]
   from = "/Fundraise2026"

@@ -3,7 +3,7 @@ import Stripe from "stripe";
 
 const router: IRouter = Router();
 
-const CAMPAIGN_RETURN_PATH = "/child-hunger";
+const CAMPAIGN_RETURN_PATH = "/fundraise2026";
 
 /** Stripe Dashboard keys sometimes pick up BOM/whitespace — normalize before validating. */
 function stripeSecretKey(): string {
