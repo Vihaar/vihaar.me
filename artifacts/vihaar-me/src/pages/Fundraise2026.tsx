@@ -5,9 +5,10 @@ import { FundraiseDonate } from "@/components/FundraiseDonate";
 import { DonorDetailsForm } from "@/components/DonorDetailsForm";
 import { FUNDRAISE_DONORS, type FundraiseDonorRow } from "@/data/fundraiseDonors";
 
+const baseUrl = () => (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
 const asset = (file: string) => `${import.meta.env.BASE_URL}images/${file}`;
-const fi = (path: string) =>
-  `${(import.meta.env.BASE_URL || "/").replace(/\/$/, "")}/feeding-india/${path}`;
+const fi = (path: string) => `${baseUrl()}/feeding-india/${path}`;
+const doc = (file: string) => `${baseUrl()}/documents/${file}`;
 
 const HERO_MEALS = 322_530;
 
@@ -805,28 +806,119 @@ export default function Fundraise2026() {
           </div>
         </motion.section>
 
-        {/* Transparency — receipts & partners, not a fitness feed */}
+        {/* Proof — how raised funds were allocated */}
         <motion.section
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="mb-10 rounded-2xl border-2 border-dashed border-[#b45309]/55 bg-[#fff7ed] p-6 md:p-7 text-stone-800 shadow-sm"
         >
-          <h2 className="font-display text-2xl md:text-3xl text-[#7c2d12] mb-2">Proof you could hold onto</h2>
+          <h2 className="font-display text-2xl md:text-3xl text-[#7c2d12] mb-2">
+            How {formatUsd(RAISED_CENTS)} was put to work
+          </h2>
           <p className="font-body leading-relaxed text-stone-700 mb-4">
-            This wasn&apos;t a private honor system. Donors got Stripe receipts, and we shared how dollars
-            moved to vetted hunger-relief partners. The pantry-run and food tallies on this page use the same
-            raised total as the donor wall —{" "}
-            <span className="font-semibold text-[#422006]">{formatUsd(RAISED_CENTS)}</span> — not a separate
-            secret spreadsheet.
+            Donors got Stripe receipts. This is how the campaign total —{" "}
+            <span className="font-semibold text-[#422006]">{formatUsd(RAISED_CENTS)}</span> — maps to program
+            costs. For the signed statement, download the PDF below.
           </p>
-          <div className="rounded-xl border-2 border-dashed border-stone-400 bg-white/85 p-4 md:p-5">
-            <p className="font-body leading-relaxed text-stone-800 mb-3">
-              <span className="font-semibold text-[#14532d]">If you want more detail:</span> reach out the same
-              way you gave — happy to share partner names, rough splits, or whatever helps you trust the
-              paper trail.
+          <div className="rounded-xl border-2 border-dashed border-[#ca8a04]/50 bg-white/90 p-4 md:p-5 mb-5">
+            <a
+              href={doc("final_statement.pdf")}
+              download="final_statement.pdf"
+              className="font-display text-lg text-[#9a3412] underline decoration-dotted underline-offset-4 hover:decoration-solid"
+            >
+              Download final statement (PDF)
+            </a>
+            <p className="font-body text-sm text-stone-600 mt-2 m-0">
+              Full reconciliation and line-item context in one document.
             </p>
           </div>
+
+          <ul className="space-y-3 font-body text-stone-800 list-none m-0 p-0 mb-2">
+            <li className="rounded-lg border border-[#d6d3d1] bg-white/80 px-4 py-3">
+              <span className="font-display font-semibold text-[#422006]">$26,792 (83%)</span>
+              <span className="text-stone-600"> — Meal production</span>
+            </li>
+            <li className="rounded-lg border border-[#d6d3d1] bg-white/80 px-4 py-3">
+              <span className="font-display font-semibold text-[#422006]">$2,903 (9%)</span>
+              <span className="text-stone-600"> — Kitchen operations</span>
+            </li>
+            <li className="rounded-lg border border-[#d6d3d1] bg-white/80 px-4 py-3">
+              <span className="font-display font-semibold text-[#422006]">$1,613 (5%)</span>
+              <span className="text-stone-600"> — Distribution &amp; last-mile delivery</span>
+            </li>
+            <li className="rounded-lg border border-[#d6d3d1] bg-white/80 px-4 py-3">
+              <span className="font-display font-semibold text-[#422006]">$645 (2%)</span>
+              <span className="text-stone-600"> — Payment processing</span>
+            </li>
+            <li className="rounded-lg border border-[#d6d3d1] bg-white/80 px-4 py-3">
+              <span className="font-display font-semibold text-[#422006]">$300 (1%)</span>
+              <span className="text-stone-600"> — Reporting &amp; transparency</span>
+            </li>
+          </ul>
+
+          <details className="rounded-xl border-2 border-dashed border-[#166534]/45 bg-[#faf6f0] overflow-hidden group">
+            <summary className="font-display text-lg md:text-xl text-[#14532d] px-4 py-4 cursor-pointer list-none flex items-center justify-between gap-3 select-none hover:bg-[#f0fdf4]/80 [&::-webkit-details-marker]:hidden">
+              <span>Full cost breakdown</span>
+              <span className="text-stone-500 text-sm font-body shrink-0 transition-transform group-open:rotate-180" aria-hidden>
+                ▼
+              </span>
+            </summary>
+            <div className="px-4 pb-5 pt-0 space-y-5 border-t border-[#d6d3d1]/80 font-body text-stone-700 text-sm md:text-base leading-relaxed">
+              <div>
+                <p className="font-display font-semibold text-stone-900 m-0 mb-1">
+                  $26,792 (83%) — Meal production
+                </p>
+                <p className="m-0">
+                  Bulk purchase of staple grains like rice, protein sources such as toor dal and other lentils,
+                  seasonal vegetables, cooking oil, salt, turmeric, chili powder, and other kitchen essentials
+                  used in high-volume daily meal preparation. This also covers washing, sorting, prepping,
+                  cooking, and portioning meals at scale through partner feeding programs.
+                </p>
+              </div>
+              <div>
+                <p className="font-display font-semibold text-stone-900 m-0 mb-1">
+                  $2,903 (9%) — Kitchen operations
+                </p>
+                <p className="m-0">
+                  Day-to-day running costs of the kitchens, including cook and helper wages, LPG fuel for
+                  large-batch cooking, clean water access, water purification, dishwashing, sanitation supplies,
+                  gloves, hairnets, aprons, cleaning materials, and routine upkeep of stoves, vessels, burners,
+                  and industrial kitchen equipment.
+                </p>
+              </div>
+              <div>
+                <p className="font-display font-semibold text-stone-900 m-0 mb-1">
+                  $1,613 (5%) — Distribution &amp; last-mile delivery
+                </p>
+                <p className="m-0">
+                  Fuel, vehicle usage, route-based transport, loading and unloading, insulated food containers,
+                  and safe daily delivery of prepared meals from kitchens to schools, community feeding points,
+                  and Anganwadi childcare centers in and around Guntur.
+                </p>
+              </div>
+              <div>
+                <p className="font-display font-semibold text-stone-900 m-0 mb-1">
+                  $645 (2%) — Payment processing
+                </p>
+                <p className="m-0">
+                  Payment gateway charges, card processing fees, currency conversion from USD to INR,
+                  cross-border transfer costs where applicable, and transaction-related banking fees required to
+                  move funds to implementation partners.
+                </p>
+              </div>
+              <div>
+                <p className="font-display font-semibold text-stone-900 m-0 mb-1">
+                  $300 (1%) — Reporting &amp; transparency
+                </p>
+                <p className="m-0">
+                  Donor receipts, campaign reconciliation, payout records, internal tracking, basic auditing
+                  support, impact documentation, and public-facing updates to keep the campaign accountable and
+                  transparent.
+                </p>
+              </div>
+            </div>
+          </details>
         </motion.section>
 
         {/* Transparent routing */}
