@@ -1,0 +1,7 @@
+# Monorepo: site lives in artifacts/vihaar-me (Vite → dist/public)
+[build]
+  command = "pnpm install && pnpm --filter @workspace/vihaar-me run build"
+  publish = "artifacts/vihaar-me/dist/public"
+
+[build.environment]
+  NODE_VERSION = "22"
