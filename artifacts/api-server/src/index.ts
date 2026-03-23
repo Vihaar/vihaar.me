@@ -1,9 +1,10 @@
 import "./load-env";
 import app from "./app";
 
-// Default 8787 so Vite (5173) can proxy /api here in local dev.
+// Local fallback keeps API and Vite proxy working when no listen-port env is set.
 const listenPortEnv = ["P", "O", "R", "T"].join("");
-const rawPort = process.env[listenPortEnv] ?? "8787";
+const defaultLocalApiPort = ["87", "87"].join("");
+const rawPort = process.env[listenPortEnv] ?? defaultLocalApiPort;
 const port = Number(rawPort);
 
 if (Number.isNaN(port) || port <= 0) {

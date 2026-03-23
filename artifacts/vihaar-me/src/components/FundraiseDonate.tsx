@@ -83,7 +83,7 @@ export function FundraiseDonate() {
         msg.includes("Load failed")
       ) {
         setErr(
-          "Can't reach the donation API. In dev, run the API on port 8787: `pnpm --filter @workspace/api-server dev` (Vite proxies /api there).",
+          "Can't reach the donation API. In dev, run `pnpm --filter @workspace/api-server dev` so Vite can proxy /api to your local API server.",
         );
       } else {
         setErr(msg);

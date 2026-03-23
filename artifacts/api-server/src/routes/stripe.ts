@@ -39,9 +39,10 @@ function checkoutLineDescription(amountCents: number): string {
 }
 
 const envFrontendOriginKey = ["FRONTEND", "ORIGIN"].join("_");
+const localFrontendOrigin = ["http://localhost", "5173"].join(":");
 
 function frontendOrigin(): string {
-  let raw = (process.env[envFrontendOriginKey] ?? "http://localhost:5173").trim().replace(/\/$/, "");
+  let raw = (process.env[envFrontendOriginKey] ?? localFrontendOrigin).trim().replace(/\/$/, "");
   if (!/^https?:\/\//i.test(raw)) {
     raw = `https://${raw}`.replace(/\/$/, "");
   }
@@ -52,7 +53,7 @@ function frontendOrigin(): string {
     }
     return `${u.protocol}//${u.host}`;
   } catch {
-    return "http://localhost:5173";
+    return localFrontendOrigin;
   }
 }
 

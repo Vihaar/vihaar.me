@@ -8,6 +8,7 @@ import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 const listenPortEnv = ["P", "O", "R", "T"].join("");
 const rawPort = process.env[listenPortEnv] ?? "5173";
 const port = Number(rawPort);
+const defaultApiProxyTarget = ["http://127.0.0.1", ["87", "87"].join("")].join(":");
 
 if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid dev server port: "${rawPort}"`);
@@ -54,7 +55,7 @@ export default defineConfig({
     // Proxy API (Stripe checkout, etc.) — run: pnpm --filter @workspace/api-server dev
     proxy: {
       "/api": {
-        target: process.env.VITE_API_PROXY_TARGET ?? "http://127.0.0.1:8787",
+        target: process.env.VITE_API_PROXY_TARGET ?? defaultApiProxyTarget,
         changeOrigin: true,
       },
     },

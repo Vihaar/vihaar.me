@@ -5,6 +5,8 @@
 
 [build.environment]
   NODE_VERSION = "22"
+  SECRETS_SCAN_OMIT_KEYS = "PORT,FRONTEND_ORIGIN"
+  SECRETS_SCAN_OMIT_PATHS = "artifacts/vihaar-me/public/feeding-india/map/india-regions.svg,artifacts/vihaar-me/dist/**"
 
 # Stripe Checkout API (serverless) — must be before SPA catch-all
 [[redirects]]
