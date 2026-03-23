@@ -57,6 +57,14 @@ export function FundraiseDonate() {
         }
       }
       if (!r.ok) {
+        const errText = data.error ?? "";
+        const stripeNotReady =
+          r.status === 503 &&
+          (errText.includes("not configured") || errText.includes("secret key missing"));
+        if (stripeNotReady && paymentLink) {
+          window.location.assign(paymentLink);
+          return;
+        }
         const extra =
           data.stripe_code != null
             ? ` (Stripe: ${data.stripe_code}${data.stripe_type ? ` / ${data.stripe_type}` : ""})`

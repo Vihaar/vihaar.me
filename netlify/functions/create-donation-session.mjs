@@ -9,7 +9,14 @@ const CAMPAIGN_RETURN_PATH = "/fundraise2026";
 function stripeSecretKey() {
   const raw = process.env.STRIPE_SECRET_KEY;
   if (typeof raw !== "string") return "";
-  return raw.replace(/^\uFEFF/, "").trim();
+  let s = raw.replace(/^\uFEFF/, "").trim();
+  if (
+    (s.startsWith('"') && s.endsWith('"')) ||
+    (s.startsWith("'") && s.endsWith("'"))
+  ) {
+    s = s.slice(1, -1).trim();
+  }
+  return s;
 }
 
 function checkoutLineDescription(amountCents) {

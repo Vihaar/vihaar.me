@@ -5,11 +5,18 @@ const router: IRouter = Router();
 
 const CAMPAIGN_RETURN_PATH = "/fundraise2026";
 
-/** Stripe Dashboard keys sometimes pick up BOM/whitespace — normalize before validating. */
+/** Stripe Dashboard / Netlify env: strip BOM, whitespace, and accidental wrapping quotes. */
 function stripeSecretKey(): string {
   const raw = process.env.STRIPE_SECRET_KEY;
   if (typeof raw !== "string") return "";
-  return raw.replace(/^\uFEFF/, "").trim();
+  let s = raw.replace(/^\uFEFF/, "").trim();
+  if (
+    (s.startsWith('"') && s.endsWith('"')) ||
+    (s.startsWith("'") && s.endsWith("'"))
+  ) {
+    s = s.slice(1, -1).trim();
+  }
+  return s;
 }
 
 /** Stripe line item copy — keep short; long/unicode strings have caused API rejections in the wild. */
