@@ -1,5 +1,8 @@
 import JSZip from "jszip";
-import { useEffect, useMemo, useState } from "react";
+import { DndContext, PointerSensor, closestCenter, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
+import { SortableContext, arrayMove, rectSortingStrategy, useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 type PictureItem = {
@@ -11,7 +14,9 @@ type PictureItem = {
 
 const MAX_PICTURES = 80;
 const STORAGE_KEY = "usha-legacy-pictures-v2";
-const SOURCE_DIR = "/Users/vbnan/Desktop/vihaar.me/vihaar.me/usha's tiger 21 pictures and documents category";
+const PICTURES_DIR = "usha-pictures";
+const LABELS_URL = `${import.meta.env.BASE_URL}${PICTURES_DIR}/labels.json`;
+const LABELS_SAVE_ENDPOINT = "/__admin/picture-labels";
 const SOURCE_FILES = [
   "WhatsApp_Image_2026-05-04_at_21.54.45-0d06be4d-4d31-4dce-be76-78b4275fa2ce.png",
   "WhatsApp_Image_2026-05-04_at_21.54.45__1_-5ff77a77-fbb0-4386-a6d5-9c02da08181e.png",
@@ -94,11 +99,8 @@ const SOURCE_FILES = [
   "WhatsApp_Image_2026-05-05_at_06.50.14-f2619e35-f9f9-4029-b245-08f984821541.png",
 ] as const;
 
-const toFsUrl = (fileName: string) => {
-  const fullPath = `${SOURCE_DIR}/${fileName}`;
-  const encoded = fullPath.split("/").map(encodeURIComponent).join("/");
-  return `/@fs/${encoded}`;
-};
+const toPictureUrl = (fileName: string) =>
+  `${import.meta.env.BASE_URL}${PICTURES_DIR}/${encodeURIComponent(fileName)}`;
 
 const CONTEXT_SECTIONS = [
   "Roots and Early Life",
@@ -130,10 +132,48 @@ const getContextLabel = (fileName: string, index: number) => {
 
 const sourcePictures: PictureItem[] = SOURCE_FILES.slice(0, MAX_PICTURES).map((fileName, index) => ({
   id: fileName,
-  src: toFsUrl(fileName),
+  src: toPictureUrl(fileName),
   label: getContextLabel(fileName, index),
   fileName,
 }));
+
+type SortablePictureCardProps = {
+  picture: PictureItem;
+  index: number;
+  onLabelChange: (id: string, label: string) => void;
+};
+
+const SortablePictureCard = ({ picture, index, onLabelChange }: SortablePictureCardProps) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: picture.id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <article
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className={`border border-border bg-card p-3 rounded-sm cursor-grab active:cursor-grabbing touch-none ${isDragging ? "z-20 shadow-xl ring-2 ring-foreground/25" : ""}`}
+    >
+      <div className="aspect-[4/3] overflow-hidden bg-muted">
+        <img src={picture.src} alt={picture.label || `Picture ${index + 1}`} className="w-full h-full object-cover select-none" />
+      </div>
+      <div className="mt-2 flex items-center gap-2">
+        <span className="smallcaps text-[0.6rem] text-foreground/60">{String(index + 1).padStart(2, "0")}</span>
+        <input
+          value={picture.label}
+          onChange={(event) => onLabelChange(picture.id, event.target.value)}
+          onPointerDownCapture={(event) => event.stopPropagation()}
+          className="w-full border border-input bg-background px-2 py-1 text-sm"
+          placeholder={`Picture ${index + 1}`}
+        />
+      </div>
+    </article>
+  );
+};
 
 const readStoredPictures = (): PictureItem[] => {
   const raw = localStorage.getItem(STORAGE_KEY);
@@ -156,28 +196,69 @@ const readStoredPictures = (): PictureItem[] => {
   }
 };
 
-const reorder = (list: PictureItem[], fromId: string, toId: string) => {
-  if (fromId === toId) return list;
-  const fromIndex = list.findIndex((x) => x.id === fromId);
-  const toIndex = list.findIndex((x) => x.id === toId);
-  if (fromIndex < 0 || toIndex < 0) return list;
-  const next = [...list];
-  const [moved] = next.splice(fromIndex, 1);
-  next.splice(toIndex, 0, moved);
-  return next;
-};
+const toLabelsMap = (items: PictureItem[]) =>
+  Object.fromEntries(items.map((item) => [item.fileName, item.label]));
 
 const Pictures = () => {
   const navigate = useNavigate();
   const [pictures, setPictures] = useState<PictureItem[]>(() => readStoredPictures());
-  const [draggingId, setDraggingId] = useState<string | null>(null);
   const [presentMode, setPresentMode] = useState(false);
   const [presentIndex, setPresentIndex] = useState(0);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const hasHydratedLabels = useRef(false);
 
   useEffect(() => {
     const payload = pictures.map((item) => ({ fileName: item.fileName, label: item.label }));
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  }, [pictures]);
+
+  useEffect(() => {
+    let alive = true;
+    const loadLabels = async () => {
+      try {
+        const response = await fetch(LABELS_URL, { cache: "no-store" });
+        if (!response.ok) return;
+        const labels = (await response.json()) as Record<string, string>;
+        if (!alive || !labels || typeof labels !== "object") return;
+        setPictures((prev) =>
+          prev.map((item) => {
+            const saved = labels[item.fileName];
+            return saved && saved.trim().length > 0 ? { ...item, label: saved } : item;
+          }),
+        );
+      } catch {
+        // Ignore read errors and continue with default/local labels.
+      } finally {
+        if (alive) hasHydratedLabels.current = true;
+      }
+    };
+    void loadLabels();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!hasHydratedLabels.current) return;
+    const timer = window.setTimeout(async () => {
+      setSaveState("saving");
+      try {
+        const response = await fetch(LABELS_SAVE_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ labels: toLabelsMap(pictures) }),
+        });
+        if (!response.ok) throw new Error("save failed");
+        setSaveState("saved");
+      } catch {
+        setSaveState("error");
+      }
+    }, 400);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
   }, [pictures]);
 
   useEffect(() => {
@@ -210,6 +291,7 @@ const Pictures = () => {
   }, [presentMode, pictures.length]);
 
   const visibleCount = useMemo(() => pictures.length, [pictures.length]);
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
 
   const updateLabel = (id: string, label: string) => {
     setPictures((prev) => prev.map((item) => (item.id === id ? { ...item, label } : item)));
@@ -238,9 +320,21 @@ const Pictures = () => {
   };
 
   const current = pictures[presentIndex];
+  const pictureIds = useMemo(() => pictures.map((picture) => picture.id), [pictures]);
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    setPictures((prev) => {
+      const oldIndex = prev.findIndex((item) => item.id === active.id);
+      const newIndex = prev.findIndex((item) => item.id === over.id);
+      if (oldIndex < 0 || newIndex < 0) return prev;
+      return arrayMove(prev, oldIndex, newIndex);
+    });
+  };
 
   return (
-    <main className="min-h-screen bg-background text-foreground p-6 overflow-auto">
+    <main className="h-screen bg-background text-foreground p-6 overflow-y-auto overflow-x-hidden">
       <header className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <button
@@ -254,6 +348,9 @@ const Pictures = () => {
         </div>
         <div className="flex items-center gap-2">
           <div className="smallcaps text-[0.65rem] border border-foreground/30 px-3 py-1">{visibleCount}/{MAX_PICTURES}</div>
+          <div className="smallcaps text-[0.65rem] border border-foreground/30 px-3 py-1">
+            {saveState === "saving" ? "Saving names..." : saveState === "saved" ? "Names saved" : saveState === "error" ? "Save failed" : "Ready"}
+          </div>
           <button type="button" onClick={() => void downloadAll()} disabled={isDownloading} className="smallcaps text-[0.65rem] border border-foreground/30 px-3 py-1 disabled:opacity-40 disabled:cursor-not-allowed">
             {isDownloading ? "Downloading..." : "Download All"}
           </button>
@@ -273,38 +370,18 @@ const Pictures = () => {
       </header>
 
       <p className="text-sm text-foreground/65 mb-4">
-        Auto-loaded from the `usha's tiger 21 pictures` folder. Drag and drop cards to reorder, edit labels inline, and use Present for fullscreen.
+        Loaded from `public/usha-pictures`. Scroll to browse all images. Drag from anywhere on a card, including the image.
       </p>
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-8">
-        {pictures.map((picture, index) => (
-          <article
-            key={picture.id}
-            draggable
-            onDragStart={() => setDraggingId(picture.id)}
-            onDragEnd={() => setDraggingId(null)}
-            onDragOver={(event) => event.preventDefault()}
-            onDrop={() => {
-              if (!draggingId) return;
-              setPictures((prev) => reorder(prev, draggingId, picture.id));
-            }}
-            className="border border-border bg-card p-3 rounded-sm"
-          >
-            <div className="aspect-[4/3] overflow-hidden bg-muted">
-              <img src={picture.src} alt={picture.label || `Picture ${index + 1}`} className="w-full h-full object-cover" />
-            </div>
-            <div className="mt-2 flex items-center gap-2">
-              <span className="smallcaps text-[0.6rem] text-foreground/60">{String(index + 1).padStart(2, "0")}</span>
-              <input
-                value={picture.label}
-                onChange={(event) => updateLabel(picture.id, event.target.value)}
-                className="w-full border border-input bg-background px-2 py-1 text-sm"
-                placeholder={`Picture ${index + 1}`}
-              />
-            </div>
-          </article>
-        ))}
-      </section>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={pictureIds} strategy={rectSortingStrategy}>
+          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-8">
+            {pictures.map((picture, index) => (
+              <SortablePictureCard key={picture.id} picture={picture} index={index} onLabelChange={updateLabel} />
+            ))}
+          </section>
+        </SortableContext>
+      </DndContext>
 
       {presentMode && current && (
         <div className="fixed inset-0 z-50 bg-black text-white flex flex-col">
