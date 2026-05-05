@@ -21,6 +21,14 @@ const STORAGE_KEY = "usha-legacy-pictures-v2";
 const PICTURES_DIR = "usha-pictures";
 const LABELS_URL = `${import.meta.env.BASE_URL}${PICTURES_DIR}/labels.json`;
 const LABELS_SAVE_ENDPOINT = "/__admin/picture-labels";
+const DUPLICATE_FILE_NAMES = new Set([
+  "WhatsApp_Image_2026-05-04_at_21.59.37-d2a5d840-eb5d-4872-bf50-1441c57a4879.png",
+  "WhatsApp_Image_2026-05-04_at_22.20.23__1_-6d6de9ea-cb16-4bcc-99de-1d1b6957bbcd.png",
+]);
+const DOCUMENT_FILES = [
+  "documents/PD DOC usha2.docx",
+  "documents/Usha Nandigala and Family.xlsx - Sheet1.csv",
+] as const;
 const SOURCE_FILES = [
   "WhatsApp_Image_2026-05-04_at_21.54.45-0d06be4d-4d31-4dce-be76-78b4275fa2ce.png",
   "WhatsApp_Image_2026-05-04_at_21.54.45__1_-5ff77a77-fbb0-4386-a6d5-9c02da08181e.png",
@@ -105,6 +113,8 @@ const SOURCE_FILES = [
 
 const toPictureUrl = (fileName: string) =>
   `${import.meta.env.BASE_URL}${PICTURES_DIR}/${encodeURIComponent(fileName)}`;
+const toRepoAssetUrl = (relativePath: string) =>
+  `${import.meta.env.BASE_URL}${PICTURES_DIR}/${relativePath.split("/").map(encodeURIComponent).join("/")}`;
 
 const CONTEXT_SECTIONS = [
   "Roots and Early Life",
@@ -134,12 +144,15 @@ const getContextLabel = (fileName: string, index: number) => {
   return `${section} · Picture ${String(index + 1).padStart(2, "0")}`;
 };
 
-const sourcePictures: PictureItem[] = SOURCE_FILES.slice(0, MAX_PICTURES).map((fileName, index) => ({
-  id: fileName,
-  src: toPictureUrl(fileName),
-  label: getContextLabel(fileName, index),
-  fileName,
-}));
+const sourcePictures: PictureItem[] = SOURCE_FILES
+  .filter((fileName) => !DUPLICATE_FILE_NAMES.has(fileName))
+  .slice(0, MAX_PICTURES)
+  .map((fileName, index) => ({
+    id: fileName,
+    src: toPictureUrl(fileName),
+    label: getContextLabel(fileName, index),
+    fileName,
+  }));
 
 type SortablePictureCardProps = {
   picture: PictureItem;
@@ -406,8 +419,15 @@ const Pictures = () => {
       </header>
 
       <p className="text-sm text-foreground/65 mb-4">
-        Scroll to browse all images. Drag and pick up any card to any other position as well.
+        Loading from repo assets in `public/usha-pictures` (mirrored from the Usha Tiger21 pictures and documents category). Scroll to browse all images. Drag and pick up any card to any other position as well.
       </p>
+      <div className="mb-4 text-xs text-foreground/70 flex flex-wrap gap-3">
+        {DOCUMENT_FILES.map((file) => (
+          <a key={file} href={toRepoAssetUrl(file)} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-foreground">
+            {file.replace("documents/", "")}
+          </a>
+        ))}
+      </div>
 
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={pictureIds} strategy={rectSortingStrategy}>
