@@ -1,8 +1,60 @@
+import { useMemo, useState } from "react";
 import { ChapterShell, SmallCaps, GoldRule } from "../ChapterShell";
 import { holdings, fmt, total, goal, byBucket, byOwner, liquidSplit } from "@/data/portfolio";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
 
 const palette = ["#C6A769", "#1C1C1C", "#8C6F3F", "#B8541F", "#5E6F7A", "#3F4A50"];
+const LogoBadge = ({ text }: { text: string }) => (
+  <div className="h-10 min-w-10 px-2 inline-flex items-center justify-center rounded border border-gold/40 bg-paper text-[0.62rem] font-semibold tracking-wide text-foreground">
+    {text}
+  </div>
+);
+
+/** Favicon via public CDNs; falls back to initials if both fail (e.g. blocked network). */
+const BrandLogo = ({ website, fallbackText }: { website: string; fallbackText: string }) => {
+  const host = useMemo(() => {
+    try {
+      return new URL(website).hostname;
+    } catch {
+      return "";
+    }
+  }, [website]);
+  const [stage, setStage] = useState<0 | 1 | 2>(0);
+
+  const src =
+    !host || stage >= 2
+      ? ""
+      : stage === 0
+        ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=128`
+        : `https://icons.duckduckgo.com/ip3/${host}.ico`;
+
+  if (!host || stage >= 2) return <LogoBadge text={fallbackText} />;
+
+  return (
+    <div className="h-10 w-10 shrink-0 inline-flex items-center justify-center rounded border border-gold/40 bg-paper overflow-hidden">
+      <img
+        src={src}
+        alt=""
+        width={28}
+        height={28}
+        className="h-7 w-7 object-contain"
+        referrerPolicy="no-referrer"
+        onError={() => setStage((s) => (s === 0 ? 1 : 2))}
+      />
+    </div>
+  );
+};
+
+const LinkButton = ({ href }: { href: string }) => (
+  <a
+    href={href}
+    target="_blank"
+    rel="noreferrer"
+    className="smallcaps text-[0.6rem] border border-foreground/30 px-2 py-1 hover:bg-foreground/10 transition-colors"
+  >
+    Website
+  </a>
+);
 
 // ===== LEDGER OVERVIEW =====
 export const LedgerOverview = () => {
@@ -79,12 +131,26 @@ export const PrivateEquityBook = () => {
 
 // ===== HEDGE FUND PIPELINE =====
 const hedgeFunds = [
-  { name: "AQR Delphi", focus: "Quant equity · long/short", status: "Diligence" },
-  { name: "Brooklyn", focus: "Multi-strategy", status: "Diligence" },
-  { name: "NewPoint (UHTC)", focus: "Healthcare specialist", status: "Diligence" },
-  { name: "Radcliffe", focus: "Credit · convert arb", status: "Diligence" },
-  { name: "Nuveen", focus: "Diversified institutional", status: "Diligence" },
-  { name: "Gotham", focus: "Long/short value", status: "Diligence" },
+  {
+    name: "AQR Delphi",
+    focus: "Quant equity · long/short",
+    status: "Diligence",
+    website: "https://www.aqr.com",
+    logoText: "AQR",
+    logoSrc: "/usha/partner-logos/aqr-delphi.svg",
+  },
+  { name: "Brooklyn", focus: "Multi-strategy", status: "Diligence", website: "https://brooklynfi.com", logoText: "BK" },
+  { name: "NewPoint (UHTC)", focus: "Healthcare specialist", status: "Diligence", website: "https://newpoint.com", logoText: "NP" },
+  { name: "Radcliffe", focus: "Credit · convert arb", status: "Diligence", website: "https://radcliffe.com", logoText: "RAD" },
+  { name: "Nuveen", focus: "Diversified institutional", status: "Diligence", website: "https://www.nuveen.com", logoText: "NV" },
+  {
+    name: "Gotham",
+    focus: "Long/short value",
+    status: "Diligence",
+    website: "https://gothamfunds.com",
+    logoText: "GTH",
+    logoSrc: "/usha/partner-logos/gotham.svg",
+  },
 ];
 export const HedgeFundPipeline = () => (
   <ChapterShell>
@@ -99,9 +165,26 @@ export const HedgeFundPipeline = () => (
         {hedgeFunds.map((f, i) => (
           <div key={f.name} className="border border-rule bg-paper/60 p-6 flex flex-col hover:border-gold transition-colors">
             <div className="tabular text-xs text-foreground/40">0{i+1}</div>
+            <div className="mt-2 h-10 flex items-center">
+              {f.logoSrc ? (
+                <div className="h-10 flex items-center">
+                  <img
+                    src={f.logoSrc}
+                    alt={f.name}
+                    className="h-8 object-contain"
+                    loading="lazy"
+                  />
+                </div>
+              ) : (
+                <BrandLogo website={f.website} fallbackText={f.logoText} />
+              )}
+            </div>
             <div className="font-serif text-3xl mt-2">{f.name}</div>
             <div className="font-garamond text-base text-foreground/75 mt-3">{f.focus}</div>
-            <div className="mt-auto pt-4 smallcaps text-gold-deep border-t border-rule">{f.status}</div>
+            <div className="mt-auto pt-4 flex items-center justify-between border-t border-rule">
+              <div className="smallcaps text-gold-deep">{f.status}</div>
+              <LinkButton href={f.website} />
+            </div>
           </div>
         ))}
       </div>
@@ -111,9 +194,9 @@ export const HedgeFundPipeline = () => (
 
 // ===== ALT INVESTMENTS =====
 const alts = [
-  { name: "AIx Fund", note: "Sourced via informed-investor network" },
-  { name: "Fusion Fund", note: "Frontier tech · early growth" },
-  { name: "Georgian Fund", note: "Applied AI / SaaS growth" },
+  { name: "AIx Fund", note: "Sourced via informed-investor network", website: "https://aixventures.com", logoText: "AIX" },
+  { name: "Fusion Fund", note: "Frontier tech · early growth", website: "https://fusionfund.com", logoText: "FUS" },
+  { name: "Georgian Fund", note: "Applied AI / SaaS growth", website: "https://georgian.io", logoText: "GEO" },
 ];
 export const AltInvestments = () => (
   <ChapterShell>
@@ -122,12 +205,16 @@ export const AltInvestments = () => (
       <h2 className="font-serif text-5xl mt-3">Three funds in diligence.</h2>
       <GoldRule className="my-8 w-32" />
       <div className="grid grid-cols-3 gap-6 flex-1">
-        {alts.map(a => (
+        {alts.map((a) => (
           <div key={a.name} className="border border-rule bg-paper/60 p-8 flex flex-col">
+            <div className="h-12 flex items-center mb-2"><BrandLogo website={a.website} fallbackText={a.logoText} /></div>
             <div className="font-serif text-4xl">{a.name}</div>
             <GoldRule className="my-4 w-12" />
             <div className="font-garamond text-lg text-foreground/75">{a.note}</div>
-            <div className="mt-auto smallcaps text-gold-deep">In diligence</div>
+            <div className="mt-auto pt-4 flex items-center justify-between">
+              <div className="smallcaps text-gold-deep">In diligence</div>
+              <LinkButton href={a.website} />
+            </div>
           </div>
         ))}
       </div>
@@ -144,22 +231,30 @@ export const WealthManagers = () => (
       <GoldRule className="my-8 w-32" />
       <div className="grid grid-cols-2 gap-8 flex-1">
         <div className="border border-rule bg-paper/60 p-10 flex flex-col">
+          <div className="h-12 flex items-center mb-2"><BrandLogo website="https://steelpeakwealth.com" fallbackText="SP" /></div>
           <div className="font-serif text-5xl">SteelPeak</div>
           <ul className="mt-6 font-garamond text-lg space-y-2 text-foreground/80">
             <li>· Boutique · multi-family</li>
             <li>· Private market access</li>
             <li>· India coordination?</li>
           </ul>
-          <div className="mt-auto smallcaps text-gold-deep">Researching</div>
+          <div className="mt-auto pt-4 flex items-center justify-between">
+            <div className="smallcaps text-gold-deep">Researching</div>
+            <LinkButton href="https://steelpeakwealth.com" />
+          </div>
         </div>
         <div className="border border-rule bg-paper/60 p-10 flex flex-col">
+          <div className="h-12 flex items-center mb-2"><BrandLogo website="https://www.morganstanley.com" fallbackText="MS" /></div>
           <div className="font-serif text-5xl">Morgan Stanley</div>
           <ul className="mt-6 font-garamond text-lg space-y-2 text-foreground/80">
             <li>· Institutional scale</li>
             <li>· PWM · structured products</li>
             <li>· Lending lines</li>
           </ul>
-          <div className="mt-auto smallcaps text-gold-deep">Researching</div>
+          <div className="mt-auto pt-4 flex items-center justify-between">
+            <div className="smallcaps text-gold-deep">Researching</div>
+            <LinkButton href="https://www.morganstanley.com" />
+          </div>
         </div>
       </div>
     </div>
