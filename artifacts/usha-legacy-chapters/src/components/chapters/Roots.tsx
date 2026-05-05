@@ -16,7 +16,9 @@ export const Roots = () => (
       <div className="col-span-5 flex flex-col justify-center relative z-10">
         <SmallCaps>Chapter I · Roots</SmallCaps>
         <h1 className="font-serif italic text-5xl md:text-7xl leading-[1.05] mt-6 text-foreground">
-          Set your<br/><span className="not-italic">sails.</span>
+          You cannot control<br />
+          <span className="not-italic">the winds, but you can</span><br />
+          adjust your sails.
         </h1>
         <div className="mt-4 text-sm tracking-widest text-gold-deep">— Seneca</div>
         <GoldRule className="my-8 w-40" />

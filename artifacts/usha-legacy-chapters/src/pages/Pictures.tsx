@@ -370,7 +370,7 @@ const Pictures = () => {
       </header>
 
       <p className="text-sm text-foreground/65 mb-4">
-        Loaded from `public/usha-pictures`. Scroll to browse all images. Drag from anywhere on a card, including the image.
+        Scroll to browse all images. Drag and pick up any card to any other position as well.
       </p>
 
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
