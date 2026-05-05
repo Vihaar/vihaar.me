@@ -109,6 +109,7 @@ const SOURCE_FILES = [
   "WhatsApp_Image_2026-05-05_at_06.33.18-78ca44cf-41c4-4605-8c3d-8aeaa713b287.png",
   "WhatsApp_Image_2026-05-05_at_06.33.43-1c5c41f2-cbe4-49b7-89c2-7a70eb67c825.png",
   "WhatsApp_Image_2026-05-05_at_06.50.14-f2619e35-f9f9-4029-b245-08f984821541.png",
+  "IMG_8335-587141d5-b774-4704-8e94-218962c75a84.png",
 ] as const;
 
 const toPictureUrl = (fileName: string) =>
@@ -158,10 +159,13 @@ type SortablePictureCardProps = {
   picture: PictureItem;
   index: number;
   onLabelChange: (id: string, label: string) => void;
+  onPreview: (id: string) => void;
+  selected: boolean;
+  onToggleSelected: (id: string, checked: boolean) => void;
 };
 
-const SortablePictureCard = ({ picture, index, onLabelChange }: SortablePictureCardProps) => {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: picture.id });
+const SortablePictureCard = ({ picture, index, onLabelChange, onPreview, selected, onToggleSelected }: SortablePictureCardProps) => {
+  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({ id: picture.id });
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -171,19 +175,41 @@ const SortablePictureCard = ({ picture, index, onLabelChange }: SortablePictureC
     <article
       ref={setNodeRef}
       style={style}
-      {...attributes}
-      {...listeners}
-      className={`border border-border bg-card p-3 rounded-sm cursor-grab active:cursor-grabbing touch-none ${isDragging ? "z-20 shadow-xl ring-2 ring-foreground/25" : ""}`}
+      className={`border border-border bg-card p-3 rounded-sm ${isDragging ? "z-20 shadow-xl ring-2 ring-foreground/25" : ""}`}
     >
-      <div className="aspect-[4/3] overflow-hidden bg-muted">
-        <img src={picture.src} alt={picture.label || `Picture ${index + 1}`} className="w-full h-full object-cover select-none" />
+      <div className="aspect-[4/3] overflow-hidden bg-muted relative">
+        <button
+          type="button"
+          onClick={() => onPreview(picture.id)}
+          className="absolute inset-0 z-10"
+          aria-label={`Preview picture ${index + 1}`}
+        />
+        <label className="absolute top-2 left-2 z-20 flex items-center gap-1 px-2 py-1 bg-black/55 text-white text-xs">
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={(event) => onToggleSelected(picture.id, event.target.checked)}
+            onClick={(event) => event.stopPropagation()}
+          />
+          Pick
+        </label>
+        <img src={picture.src} alt={picture.label || `Picture ${index + 1}`} className="w-full h-full object-cover select-none pointer-events-none" />
       </div>
-      <div className="mt-2 flex items-center gap-2">
+      <div className="mt-2 flex items-center gap-2 justify-start">
+        <button
+          ref={setActivatorNodeRef}
+          type="button"
+          {...attributes}
+          {...listeners}
+          className="smallcaps text-[0.52rem] border border-foreground/30 px-2 py-1 cursor-grab active:cursor-grabbing touch-none"
+          aria-label={`Drag picture ${index + 1}`}
+        >
+          Drag
+        </button>
         <span className="smallcaps text-[0.6rem] text-foreground/60">{String(index + 1).padStart(2, "0")}</span>
         <input
           value={picture.label}
           onChange={(event) => onLabelChange(picture.id, event.target.value)}
-          onPointerDownCapture={(event) => event.stopPropagation()}
           className="w-full border border-input bg-background px-2 py-1 text-sm"
           placeholder={`Picture ${index + 1}`}
         />
@@ -238,6 +264,7 @@ const normalizePersistedState = (payload: unknown): PersistedPictureState => {
 const Pictures = () => {
   const navigate = useNavigate();
   const [pictures, setPictures] = useState<PictureItem[]>(() => readStoredPictures());
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [presentMode, setPresentMode] = useState(false);
   const [presentIndex, setPresentIndex] = useState(0);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -258,13 +285,14 @@ const Pictures = () => {
         const payload = (await response.json()) as unknown;
         if (!alive) return;
         const { labels, order } = normalizePersistedState(payload);
+        const hasLocalState = Boolean(localStorage.getItem(STORAGE_KEY));
         setPictures((prev) => {
           const withLabels = prev.map((item) => {
             const saved = labels[item.fileName];
             return saved && saved.trim().length > 0 ? { ...item, label: saved } : item;
           });
 
-          if (!order.length) return withLabels;
+          if (!order.length || hasLocalState) return withLabels;
           const lookup = new Map(withLabels.map((item) => [item.fileName, item]));
           const ordered: PictureItem[] = [];
           order.forEach((fileName) => {
@@ -322,12 +350,17 @@ const Pictures = () => {
   }, [presentMode]);
 
   useEffect(() => {
+    setSelectedIds((prev) => prev.filter((id) => pictures.some((picture) => picture.id === id)));
+  }, [pictures]);
+
+  useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (!presentMode) return;
       if (event.key === "Escape") {
         setPresentMode(false);
         return;
       }
+      if (selectedIds.length > 0) return;
       if (event.key === "ArrowRight") {
         setPresentIndex((idx) => Math.min(idx + 1, pictures.length - 1));
       }
@@ -337,7 +370,7 @@ const Pictures = () => {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [presentMode, pictures.length]);
+  }, [presentMode, pictures.length, selectedIds.length]);
 
   const visibleCount = useMemo(() => pictures.length, [pictures.length]);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
@@ -370,6 +403,10 @@ const Pictures = () => {
 
   const current = pictures[presentIndex];
   const pictureIds = useMemo(() => pictures.map((picture) => picture.id), [pictures]);
+  const selectedPictures = useMemo(
+    () => pictures.filter((picture) => selectedIds.includes(picture.id)),
+    [pictures, selectedIds],
+  );
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -379,6 +416,20 @@ const Pictures = () => {
       const newIndex = prev.findIndex((item) => item.id === over.id);
       if (oldIndex < 0 || newIndex < 0) return prev;
       return arrayMove(prev, oldIndex, newIndex);
+    });
+  };
+
+  const openPicture = (id: string) => {
+    const index = pictures.findIndex((picture) => picture.id === id);
+    if (index < 0) return;
+    setPresentIndex(index);
+    setPresentMode(true);
+  };
+
+  const toggleSelected = (id: string, checked: boolean) => {
+    setSelectedIds((prev) => {
+      if (checked) return prev.includes(id) ? prev : [...prev, id];
+      return prev.filter((value) => value !== id);
     });
   };
 
@@ -400,6 +451,17 @@ const Pictures = () => {
           <div className="smallcaps text-[0.65rem] border border-foreground/30 px-3 py-1">
             {saveState === "saving" ? "Saving names..." : saveState === "saved" ? "Names saved" : saveState === "error" ? "Save failed" : "Ready"}
           </div>
+          {DOCUMENT_FILES.map((file) => (
+            <a
+              key={file}
+              href={toRepoAssetUrl(file)}
+              target="_blank"
+              rel="noreferrer"
+              className="smallcaps text-[0.65rem] border border-foreground/30 px-3 py-1 hover:bg-foreground/10 transition-colors"
+            >
+              {file.includes(".docx") ? "View PD Doc" : "View Excel"}
+            </a>
+          ))}
           <button type="button" onClick={() => void downloadAll()} disabled={isDownloading} className="smallcaps text-[0.65rem] border border-foreground/30 px-3 py-1 disabled:opacity-40 disabled:cursor-not-allowed">
             {isDownloading ? "Downloading..." : "Download All"}
           </button>
@@ -407,7 +469,12 @@ const Pictures = () => {
             type="button"
             onClick={() => {
               if (!pictures.length) return;
-              setPresentIndex(0);
+              if (selectedIds.length === 0) {
+                setPresentIndex(0);
+              } else {
+                const firstSelected = pictures.findIndex((picture) => picture.id === selectedIds[0]);
+                setPresentIndex(firstSelected >= 0 ? firstSelected : 0);
+              }
               setPresentMode(true);
             }}
             disabled={!pictures.length}
@@ -421,19 +488,20 @@ const Pictures = () => {
       <p className="text-sm text-foreground/65 mb-4">
         Loading from repo assets in `public/usha-pictures` (mirrored from the Usha Tiger21 pictures and documents category). Scroll to browse all images. Drag and pick up any card to any other position as well.
       </p>
-      <div className="mb-4 text-xs text-foreground/70 flex flex-wrap gap-3">
-        {DOCUMENT_FILES.map((file) => (
-          <a key={file} href={toRepoAssetUrl(file)} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-foreground">
-            {file.replace("documents/", "")}
-          </a>
-        ))}
-      </div>
 
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={pictureIds} strategy={rectSortingStrategy}>
           <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-8">
             {pictures.map((picture, index) => (
-              <SortablePictureCard key={picture.id} picture={picture} index={index} onLabelChange={updateLabel} />
+              <SortablePictureCard
+                key={picture.id}
+                picture={picture}
+                index={index}
+                onLabelChange={updateLabel}
+                onPreview={openPicture}
+                selected={selectedIds.includes(picture.id)}
+                onToggleSelected={toggleSelected}
+              />
             ))}
           </section>
         </SortableContext>
@@ -442,7 +510,11 @@ const Pictures = () => {
       {presentMode && current && (
         <div className="fixed inset-0 z-50 bg-black text-white flex flex-col">
           <div className="p-4 flex items-center justify-between">
-            <div className="smallcaps text-[0.65rem]">{current.label || `Picture ${presentIndex + 1}`}</div>
+            <div className="smallcaps text-[0.65rem]">
+              {selectedPictures.length > 1
+                ? `Selected Pictures · ${selectedPictures.length}`
+                : current.label || `Picture ${presentIndex + 1}`}
+            </div>
             <button
               type="button"
               onClick={() => setPresentMode(false)}
@@ -451,25 +523,40 @@ const Pictures = () => {
               Exit
             </button>
           </div>
-          <div className="flex-1 relative flex items-center justify-center px-6 pb-6">
-            <button
-              type="button"
-              onClick={() => setPresentIndex((idx) => Math.max(idx - 1, 0))}
-              disabled={presentIndex === 0}
-              className="absolute left-4 top-1/2 -translate-y-1/2 h-10 w-10 border border-white/40 rounded-full disabled:opacity-40"
-            >
-              ‹
-            </button>
-            <img src={current.src} alt={current.label || `Picture ${presentIndex + 1}`} className="max-h-full max-w-full object-contain" />
-            <button
-              type="button"
-              onClick={() => setPresentIndex((idx) => Math.min(idx + 1, pictures.length - 1))}
-              disabled={presentIndex === pictures.length - 1}
-              className="absolute right-4 top-1/2 -translate-y-1/2 h-10 w-10 border border-white/40 rounded-full disabled:opacity-40"
-            >
-              ›
-            </button>
-          </div>
+          {selectedPictures.length > 1 ? (
+            <div className="flex-1 overflow-auto p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 content-start">
+              {selectedPictures.map((picture) => (
+                <figure key={picture.id} className="border border-white/20 p-2 bg-black/30">
+                  <img src={picture.src} alt={picture.label || picture.fileName} className="w-full aspect-[4/3] object-contain bg-black/60" />
+                  <figcaption className="mt-2 text-xs text-white/80">{picture.label || picture.fileName}</figcaption>
+                </figure>
+              ))}
+            </div>
+          ) : (
+            <div className="flex-1 relative flex items-center justify-center px-6 pb-6">
+              {selectedPictures.length === 0 && (
+                <button
+                  type="button"
+                  onClick={() => setPresentIndex((idx) => Math.max(idx - 1, 0))}
+                  disabled={presentIndex === 0}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 h-10 w-10 border border-white/40 rounded-full disabled:opacity-40"
+                >
+                  ‹
+                </button>
+              )}
+              <img src={selectedPictures[0]?.src ?? current.src} alt={selectedPictures[0]?.label || current.label || `Picture ${presentIndex + 1}`} className="max-h-full max-w-full object-contain" />
+              {selectedPictures.length === 0 && (
+                <button
+                  type="button"
+                  onClick={() => setPresentIndex((idx) => Math.min(idx + 1, pictures.length - 1))}
+                  disabled={presentIndex === pictures.length - 1}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 h-10 w-10 border border-white/40 rounded-full disabled:opacity-40"
+                >
+                  ›
+                </button>
+              )}
+            </div>
+          )}
         </div>
       )}
     </main>
