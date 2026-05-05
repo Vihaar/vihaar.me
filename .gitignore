@@ -53,3 +53,7 @@ Thumbs.db
 .env
 .env.local
 .env.*.local
+
+# Generated embedded subpage builds
+artifacts/vihaar-me/public/usha/
+artifacts/vihaar-me/public/usher/

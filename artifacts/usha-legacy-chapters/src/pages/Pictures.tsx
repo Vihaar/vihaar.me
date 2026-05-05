@@ -1,23 +1,158 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import JSZip from "jszip";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 type PictureItem = {
   id: string;
   src: string;
   label: string;
+  fileName: string;
 };
 
 const MAX_PICTURES = 80;
-const STORAGE_KEY = "usha-legacy-pictures-v1";
+const STORAGE_KEY = "usha-legacy-pictures-v2";
+const SOURCE_DIR = "/Users/vbnan/Desktop/vihaar.me/vihaar.me/usha's tiger 21 pictures and documents category";
+const SOURCE_FILES = [
+  "WhatsApp_Image_2026-05-04_at_21.54.45-0d06be4d-4d31-4dce-be76-78b4275fa2ce.png",
+  "WhatsApp_Image_2026-05-04_at_21.54.45__1_-5ff77a77-fbb0-4386-a6d5-9c02da08181e.png",
+  "WhatsApp_Image_2026-05-04_at_21.54.45__2_-0f8c7432-6a44-4856-a4a9-f598211e8f1a.png",
+  "WhatsApp_Image_2026-05-04_at_21.54.45__3_-deea7310-c748-415d-a634-79dcc104652e.png",
+  "WhatsApp_Image_2026-05-04_at_21.54.46-d5e8f569-5d6b-4908-8ab9-0a37af39b217.png",
+  "WhatsApp_Image_2026-05-04_at_21.55.20-1cad098a-904c-4390-bd44-53cbcfb20f87.png",
+  "WhatsApp_Image_2026-05-04_at_21.55.20__1_-0a4bbb52-f15b-4f66-bcb2-ba976f51b66b.png",
+  "WhatsApp_Image_2026-05-04_at_21.55.20__2_-22faffd3-3a45-4dae-b828-19d44d0c602b.png",
+  "WhatsApp_Image_2026-05-04_at_21.55.20__3_-f6e9f1e2-f23d-4983-9408-9ba23ca2902c.png",
+  "WhatsApp_Image_2026-05-04_at_21.55.20__4_-0282af8b-82da-44c5-aae6-8d034d41049c.png",
+  "WhatsApp_Image_2026-05-04_at_21.55.21-bedfe89b-cbac-47bd-add2-aabb896c5e30.png",
+  "WhatsApp_Image_2026-05-04_at_21.55.21__1_-65faf0bb-aa78-443f-b70b-a20b0fad1ad8.png",
+  "WhatsApp_Image_2026-05-04_at_21.55.21__2_-c119cb3b-b6b6-4e17-82a3-0f45705ed1c4.png",
+  "WhatsApp_Image_2026-05-04_at_21.55.21__3_-c936bcb1-c32f-4cb4-baf7-89d2d6aae83c.png",
+  "WhatsApp_Image_2026-05-04_at_21.55.21__4_-38138e95-8708-4f30-a9ec-39782e79fc51.png",
+  "WhatsApp_Image_2026-05-04_at_21.55.22-90dc186d-aca5-40b1-9c40-81109abadb3d.png",
+  "WhatsApp_Image_2026-05-04_at_21.55.22__1_-24fd8277-0d8c-45e1-9486-992e6972f44f.png",
+  "WhatsApp_Image_2026-05-04_at_21.55.22__2_-5ae818cc-3189-4c8b-8d36-f37e8a174a27.png",
+  "WhatsApp_Image_2026-05-04_at_21.55.22__3_-7d0c0d03-a08a-4e9a-976c-f962eaff13bb.png",
+  "WhatsApp_Image_2026-05-04_at_21.55.22__4_-cc0f06b7-9120-4a1c-85f4-868e15cde669.png",
+  "WhatsApp_Image_2026-05-04_at_21.55.22__5_-5bceb7db-45ba-4034-9657-0aa9321364f7.png",
+  "WhatsApp_Image_2026-05-04_at_21.55.23-bfd52895-1c4c-4adb-bee0-1c595252cbf3.png",
+  "WhatsApp_Image_2026-05-04_at_21.55.23__1_-52797777-8c45-4992-a377-9a268c4a550b.png",
+  "WhatsApp_Image_2026-05-04_at_21.55.23__2_-c3601f72-d49a-4a22-baff-fd9a0c9430ad.png",
+  "WhatsApp_Image_2026-05-04_at_21.57.21-97b853d7-c8c6-4c66-b0dc-93c1f953f5f0.png",
+  "WhatsApp_Image_2026-05-04_at_21.57.22-cac0d907-f71d-40f1-af1c-be890e266b5e.png",
+  "WhatsApp_Image_2026-05-04_at_21.57.25-f4a7b153-b00b-4bd2-85bf-b847195ebe7a.png",
+  "WhatsApp_Image_2026-05-04_at_21.57.25__1_-dff51b90-a5ac-4622-8e79-5ee6ba7dfd22.png",
+  "WhatsApp_Image_2026-05-04_at_21.58.49-0f966425-ba18-4c79-aac7-da77a19ccebb.png",
+  "WhatsApp_Image_2026-05-04_at_21.59.37-d2a5d840-eb5d-4872-bf50-1441c57a4879.png",
+  "WhatsApp_Image_2026-05-04_at_22.00.32-8e189a58-406d-4cb3-aa02-3c511c0e89f1.png",
+  "WhatsApp_Image_2026-05-04_at_22.03.23-22674942-0f86-4a40-9aaf-780ca7c70aa2.png",
+  "WhatsApp_Image_2026-05-04_at_22.08.06-3ff2402f-b2b7-4719-9014-ce69fff65f18.png",
+  "WhatsApp_Image_2026-05-04_at_22.11.42-a4431dbd-d60b-448f-88b9-a66bb0f61e40.png",
+  "WhatsApp_Image_2026-05-04_at_22.14.40-be2c40ec-9b66-4e01-81de-9c45e5254c0f.png",
+  "WhatsApp_Image_2026-05-04_at_22.15.13-8409f5d6-59cb-4122-86f6-3928a31e8ddc.png",
+  "WhatsApp_Image_2026-05-04_at_22.15.37-355cab12-bdd7-44cd-99f8-21289903d7ce.png",
+  "WhatsApp_Image_2026-05-04_at_22.16.19-96f83fad-06ed-4d0b-8348-c821f54260b0.png",
+  "WhatsApp_Image_2026-05-04_at_22.17.21-ad9ae594-0412-4bd6-b472-9f8afc97b02d.png",
+  "WhatsApp_Image_2026-05-04_at_22.18.41-97390782-afa1-4200-a8b3-023a1d7a6132.png",
+  "WhatsApp_Image_2026-05-04_at_22.19.12-cee90f3b-7a88-4363-a941-4dcb051ce204.png",
+  "WhatsApp_Image_2026-05-04_at_22.19.41-f3e259e0-6b0a-484b-b46a-dabbc301337d.png",
+  "WhatsApp_Image_2026-05-04_at_22.20.01-fa6805ac-5121-4448-b7dd-9b4a2d415fe8.png",
+  "WhatsApp_Image_2026-05-04_at_22.20.23-d40b6984-e876-4c43-8d0d-05f4d3172a76.png",
+  "WhatsApp_Image_2026-05-04_at_22.20.23__1_-6d6de9ea-cb16-4bcc-99de-1d1b6957bbcd.png",
+  "WhatsApp_Image_2026-05-04_at_22.20.58-61cb2cbb-6ad9-497d-ad87-5acb8d6c3373.png",
+  "WhatsApp_Image_2026-05-04_at_22.21.26-2c6f5697-bcb0-4ea2-a870-eb0b63630412.png",
+  "WhatsApp_Image_2026-05-04_at_22.21.58-fbd61961-5994-422a-8e38-c94bd171f3c5.png",
+  "WhatsApp_Image_2026-05-04_at_22.22.22-cfc1ab75-9a22-47f3-9981-1a9f423f318a.png",
+  "WhatsApp_Image_2026-05-04_at_22.22.52-ef4d939c-3067-4b3a-9efd-80bf18f69f23.png",
+  "WhatsApp_Image_2026-05-04_at_22.23.15-a1d395b0-c6d7-44d7-af34-19d6c52a91a8.png",
+  "WhatsApp_Image_2026-05-04_at_22.23.43-77d82638-1144-40a7-bf1a-f5514a63271d.png",
+  "WhatsApp_Image_2026-05-04_at_22.24.05-15a6b5fa-04a9-4386-8f08-49e09b969873.png",
+  "WhatsApp_Image_2026-05-04_at_22.24.31-535b172f-371b-4430-820e-ad2a7784e06a.png",
+  "WhatsApp_Image_2026-05-04_at_22.25.20-4fd5963e-abc2-4530-a0db-a301e41ee4b0.png",
+  "WhatsApp_Image_2026-05-04_at_22.27.44-f800136d-2b68-4ea1-a10b-7051edd4eabf.png",
+  "WhatsApp_Image_2026-05-04_at_22.30.14-16f3a79d-5f10-4789-a7d1-90b5291114ca.png",
+  "WhatsApp_Image_2026-05-04_at_22.31.46-38e4e667-6bf0-4956-a95a-e777e8a8a7be.png",
+  "WhatsApp_Image_2026-05-04_at_22.32.57-b624c447-1d56-43ce-995e-1fada4feb27b.png",
+  "WhatsApp_Image_2026-05-04_at_22.33.15-c8c76c51-f5a3-45a7-9b64-321928c0dc10.png",
+  "WhatsApp_Image_2026-05-04_at_22.34.20-65a6d30f-0226-46de-ae58-d55521366909.png",
+  "WhatsApp_Image_2026-05-04_at_22.35.07-f150a99e-222b-4a1d-bed5-63d321f35324.png",
+  "WhatsApp_Image_2026-05-04_at_22.36.22-061dddef-7b4f-4d4f-aa46-54a98e6241bf.png",
+  "WhatsApp_Image_2026-05-04_at_22.38.27-60ba0342-62b9-4983-b56e-4329fd6a0878.png",
+  "WhatsApp_Image_2026-05-04_at_22.52.27-12eabd0b-7f76-461c-ba83-bc0223a4652d.png",
+  "WhatsApp_Image_2026-05-04_at_22.55.47-bef84519-810b-4479-877d-ffce00c15173.png",
+  "WhatsApp_Image_2026-05-04_at_22.59.07-1a5c1b34-034c-4e1f-ab13-0088c3a30590.png",
+  "WhatsApp_Image_2026-05-05_at_05.23.04-60756656-b7b2-4d5b-acaf-5208cd6b057c.png",
+  "WhatsApp_Image_2026-05-05_at_05.49.09-55389130-079e-46cc-8146-fde6c9185740.png",
+  "WhatsApp_Image_2026-05-05_at_05.57.44-7e5cd407-5f5d-431d-b490-3102aabd5709.png",
+  "WhatsApp_Image_2026-05-05_at_05.58.33-030e2036-9bbb-4101-b289-2a4ea43dc11c.png",
+  "WhatsApp_Image_2026-05-05_at_05.58.33__1_-168586fe-d17f-43a1-8cae-b3ad10b44f30.png",
+  "WhatsApp_Image_2026-05-05_at_05.59.19-256ff9eb-0398-439d-a8d7-0c6052259586.png",
+  "WhatsApp_Image_2026-05-05_at_06.01.12-fc65f5ee-c442-4f2d-8735-7587e29d3cc8.png",
+  "WhatsApp_Image_2026-05-05_at_06.29.54-31b1bc5a-014e-45c0-ad82-6f23a55f29af.png",
+  "WhatsApp_Image_2026-05-05_at_06.31.05-c671c8b4-4056-4128-8994-413e53753f90.png",
+  "WhatsApp_Image_2026-05-05_at_06.33.18-78ca44cf-41c4-4605-8c3d-8aeaa713b287.png",
+  "WhatsApp_Image_2026-05-05_at_06.33.43-1c5c41f2-cbe4-49b7-89c2-7a70eb67c825.png",
+  "WhatsApp_Image_2026-05-05_at_06.50.14-f2619e35-f9f9-4029-b245-08f984821541.png",
+] as const;
+
+const toFsUrl = (fileName: string) => {
+  const fullPath = `${SOURCE_DIR}/${fileName}`;
+  const encoded = fullPath.split("/").map(encodeURIComponent).join("/");
+  return `/@fs/${encoded}`;
+};
+
+const CONTEXT_SECTIONS = [
+  "Roots and Early Life",
+  "School and Leadership",
+  "Marriage and Move to US",
+  "Career Growth",
+  "Family and Children",
+  "Caregiving and Resilience",
+  "Investing and Ownership",
+  "US and India Assets",
+  "Legacy and Purpose",
+];
+
+const OCR_HINT_LABELS: Record<string, string> = {
+  "WhatsApp_Image_2026-05-05_at_06.50.14-f2619e35-f9f9-4029-b245-08f984821541.png": "Tiger 21 Meeting Agenda",
+  "WhatsApp_Image_2026-05-05_at_05.58.33__1_-168586fe-d17f-43a1-8cae-b3ad10b44f30.png": "Shri Laxmi Narasimha Reddy Nandigala",
+  "WhatsApp_Image_2026-05-05_at_06.01.12-fc65f5ee-c442-4f2d-8735-7587e29d3cc8.png": "Living Isha Reflection",
+};
+
+const isFileNameLikeLabel = (label: string) =>
+  label.includes("WhatsApp_Image_") || label.length > 55 || label.toLowerCase().includes("realme");
+
+const getContextLabel = (fileName: string, index: number) => {
+  const ocrHint = OCR_HINT_LABELS[fileName];
+  if (ocrHint) return ocrHint;
+  const section = CONTEXT_SECTIONS[Math.min(Math.floor(index / 9), CONTEXT_SECTIONS.length - 1)];
+  return `${section} · Picture ${String(index + 1).padStart(2, "0")}`;
+};
+
+const sourcePictures: PictureItem[] = SOURCE_FILES.slice(0, MAX_PICTURES).map((fileName, index) => ({
+  id: fileName,
+  src: toFsUrl(fileName),
+  label: getContextLabel(fileName, index),
+  fileName,
+}));
 
 const readStoredPictures = (): PictureItem[] => {
   const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) return [];
+  if (!raw) return sourcePictures;
   try {
-    const parsed = JSON.parse(raw) as PictureItem[];
-    return parsed.filter((item) => item.id && item.src).slice(0, MAX_PICTURES);
+    const parsed = JSON.parse(raw) as Array<Pick<PictureItem, "fileName" | "label">>;
+    const lookup = new Map(sourcePictures.map((item) => [item.fileName, item]));
+    const ordered: PictureItem[] = [];
+    parsed.forEach((saved) => {
+      const match = lookup.get(saved.fileName);
+      if (!match) return;
+      lookup.delete(saved.fileName);
+      const safeLabel = !saved.label || isFileNameLikeLabel(saved.label) ? match.label : saved.label;
+      ordered.push({ ...match, label: safeLabel });
+    });
+    lookup.forEach((leftover) => ordered.push(leftover));
+    return ordered.slice(0, MAX_PICTURES);
   } catch {
-    return [];
+    return sourcePictures;
   }
 };
 
@@ -34,14 +169,15 @@ const reorder = (list: PictureItem[], fromId: string, toId: string) => {
 
 const Pictures = () => {
   const navigate = useNavigate();
-  const inputRef = useRef<HTMLInputElement>(null);
   const [pictures, setPictures] = useState<PictureItem[]>(() => readStoredPictures());
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [presentMode, setPresentMode] = useState(false);
   const [presentIndex, setPresentIndex] = useState(0);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(pictures));
+    const payload = pictures.map((item) => ({ fileName: item.fileName, label: item.label }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
   }, [pictures]);
 
   useEffect(() => {
@@ -73,31 +209,32 @@ const Pictures = () => {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [presentMode, pictures.length]);
 
-  const uploadCount = useMemo(() => Math.max(0, MAX_PICTURES - pictures.length), [pictures.length]);
-
-  const onUpload = async (files: FileList | null) => {
-    if (!files?.length) return;
-    const incoming = Array.from(files).slice(0, uploadCount);
-    const reads = incoming.map(
-      (file, index) =>
-        new Promise<PictureItem>((resolve) => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            resolve({
-              id: crypto.randomUUID(),
-              src: String(reader.result),
-              label: file.name.replace(/\.[^.]+$/, "") || `Picture ${pictures.length + index + 1}`,
-            });
-          };
-          reader.readAsDataURL(file);
-        }),
-    );
-    const loaded = await Promise.all(reads);
-    setPictures((prev) => [...prev, ...loaded].slice(0, MAX_PICTURES));
-  };
+  const visibleCount = useMemo(() => pictures.length, [pictures.length]);
 
   const updateLabel = (id: string, label: string) => {
     setPictures((prev) => prev.map((item) => (item.id === id ? { ...item, label } : item)));
+  };
+
+  const downloadAll = async () => {
+    setIsDownloading(true);
+    try {
+      const zip = new JSZip();
+      for (const picture of pictures) {
+        const res = await fetch(picture.src);
+        if (!res.ok) continue;
+        const blob = await res.blob();
+        zip.file(picture.fileName, blob);
+      }
+      const zipped = await zip.generateAsync({ type: "blob" });
+      const href = URL.createObjectURL(zipped);
+      const anchor = document.createElement("a");
+      anchor.href = href;
+      anchor.download = "usha-tiger-21-pictures.zip";
+      anchor.click();
+      URL.revokeObjectURL(href);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   const current = pictures[presentIndex];
@@ -116,13 +253,9 @@ const Pictures = () => {
           <div className="smallcaps text-[0.7rem]">Pictures</div>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => inputRef.current?.click()}
-            disabled={uploadCount === 0}
-            className="smallcaps text-[0.65rem] border border-foreground/30 px-3 py-1 disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            Upload ({pictures.length}/{MAX_PICTURES})
+          <div className="smallcaps text-[0.65rem] border border-foreground/30 px-3 py-1">{visibleCount}/{MAX_PICTURES}</div>
+          <button type="button" onClick={() => void downloadAll()} disabled={isDownloading} className="smallcaps text-[0.65rem] border border-foreground/30 px-3 py-1 disabled:opacity-40 disabled:cursor-not-allowed">
+            {isDownloading ? "Downloading..." : "Download All"}
           </button>
           <button
             type="button"
@@ -137,21 +270,10 @@ const Pictures = () => {
             Present
           </button>
         </div>
-        <input
-          ref={inputRef}
-          type="file"
-          accept="image/*"
-          multiple
-          className="hidden"
-          onChange={(event) => {
-            void onUpload(event.target.files);
-            event.currentTarget.value = "";
-          }}
-        />
       </header>
 
       <p className="text-sm text-foreground/65 mb-4">
-        Upload up to {MAX_PICTURES} pictures, drag and drop cards to reorder, and edit labels inline.
+        Auto-loaded from the `usha's tiger 21 pictures` folder. Drag and drop cards to reorder, edit labels inline, and use Present for fullscreen.
       </p>
 
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-8">

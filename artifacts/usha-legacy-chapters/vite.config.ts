@@ -13,7 +13,25 @@ export default defineConfig(({ mode }) => ({
       overlay: false,
     },
   },
-  plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+  plugins: [
+    react(),
+    mode === "development" && componentTagger(),
+    mode === "development" && {
+      name: "dev-pictures-redirect",
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          if (!req.url) return next();
+          if (req.url === "/pictures" || req.url.startsWith("/pictures?")) {
+            res.statusCode = 302;
+            res.setHeader("Location", `/usha${req.url}`);
+            res.end();
+            return;
+          }
+          next();
+        });
+      },
+    },
+  ].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
