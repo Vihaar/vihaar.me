@@ -1,6 +1,6 @@
 # Monorepo: site lives in artifacts/vihaar-me (Vite → dist/public)
 [build]
-  command = "pnpm install && pnpm --filter @workspace/vihaar-me run build"
+  command = "pnpm install && cd artifacts/usha-legacy-chapters && npm install && npm run build && cd ../.. && rm -rf artifacts/vihaar-me/public/usha && mkdir -p artifacts/vihaar-me/public/usha && cp -R artifacts/usha-legacy-chapters/dist/* artifacts/vihaar-me/public/usha/ && pnpm --filter @workspace/vihaar-me run build"
   publish = "artifacts/vihaar-me/dist/public"
 
 [build.environment]
@@ -20,6 +20,16 @@
   from = "/Fundraise2026"
   to = "/fundraise2026"
   status = 301
+
+[[redirects]]
+  from = "/usha"
+  to = "/usha/"
+  status = 301
+
+[[redirects]]
+  from = "/usha/*"
+  to = "/usha/index.html"
+  status = 200
 
 [[redirects]]
   from = "/*"
