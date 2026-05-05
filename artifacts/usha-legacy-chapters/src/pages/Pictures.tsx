@@ -11,6 +11,10 @@ type PictureItem = {
   label: string;
   fileName: string;
 };
+type PersistedPictureState = {
+  labels: Record<string, string>;
+  order: string[];
+};
 
 const MAX_PICTURES = 80;
 const STORAGE_KEY = "usha-legacy-pictures-v2";
@@ -198,6 +202,25 @@ const readStoredPictures = (): PictureItem[] => {
 
 const toLabelsMap = (items: PictureItem[]) =>
   Object.fromEntries(items.map((item) => [item.fileName, item.label]));
+const toOrderList = (items: PictureItem[]) => items.map((item) => item.fileName);
+const normalizePersistedState = (payload: unknown): PersistedPictureState => {
+  if (!payload || typeof payload !== "object") {
+    return { labels: {}, order: [] };
+  }
+
+  // Backward compatibility with old format: { "<fileName>": "<label>" }
+  const legacyEntries = Object.entries(payload as Record<string, unknown>).filter(([, value]) => typeof value === "string");
+  const legacyLabels = Object.fromEntries(legacyEntries) as Record<string, string>;
+
+  const parsed = payload as { labels?: unknown; order?: unknown };
+  const labels =
+    parsed.labels && typeof parsed.labels === "object"
+      ? Object.fromEntries(Object.entries(parsed.labels as Record<string, unknown>).filter(([, value]) => typeof value === "string"))
+      : legacyLabels;
+  const order = Array.isArray(parsed.order) ? parsed.order.filter((value): value is string => typeof value === "string") : [];
+
+  return { labels, order };
+};
 
 const Pictures = () => {
   const navigate = useNavigate();
@@ -219,14 +242,27 @@ const Pictures = () => {
       try {
         const response = await fetch(LABELS_URL, { cache: "no-store" });
         if (!response.ok) return;
-        const labels = (await response.json()) as Record<string, string>;
-        if (!alive || !labels || typeof labels !== "object") return;
-        setPictures((prev) =>
-          prev.map((item) => {
+        const payload = (await response.json()) as unknown;
+        if (!alive) return;
+        const { labels, order } = normalizePersistedState(payload);
+        setPictures((prev) => {
+          const withLabels = prev.map((item) => {
             const saved = labels[item.fileName];
             return saved && saved.trim().length > 0 ? { ...item, label: saved } : item;
-          }),
-        );
+          });
+
+          if (!order.length) return withLabels;
+          const lookup = new Map(withLabels.map((item) => [item.fileName, item]));
+          const ordered: PictureItem[] = [];
+          order.forEach((fileName) => {
+            const match = lookup.get(fileName);
+            if (!match) return;
+            ordered.push(match);
+            lookup.delete(fileName);
+          });
+          lookup.forEach((item) => ordered.push(item));
+          return ordered;
+        });
       } catch {
         // Ignore read errors and continue with default/local labels.
       } finally {
@@ -247,7 +283,7 @@ const Pictures = () => {
         const response = await fetch(LABELS_SAVE_ENDPOINT, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ labels: toLabelsMap(pictures) }),
+          body: JSON.stringify({ labels: toLabelsMap(pictures), order: toOrderList(pictures) }),
         });
         if (!response.ok) throw new Error("save failed");
         setSaveState("saved");

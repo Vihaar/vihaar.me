@@ -49,15 +49,16 @@ export default defineConfig(({ mode }) => ({
 
           req.on("end", () => {
             try {
-              const parsed = JSON.parse(body) as { labels?: Record<string, string> };
+              const parsed = JSON.parse(body) as { labels?: Record<string, string>; order?: string[] };
               if (!parsed.labels || typeof parsed.labels !== "object") {
                 res.statusCode = 400;
                 res.end("Invalid payload");
                 return;
               }
+              const order = Array.isArray(parsed.order) ? parsed.order.filter((value): value is string => typeof value === "string") : [];
 
               const filePath = path.resolve(__dirname, "public/usha-pictures/labels.json");
-              fs.writeFileSync(filePath, JSON.stringify(parsed.labels, null, 2) + "\n", "utf-8");
+              fs.writeFileSync(filePath, JSON.stringify({ labels: parsed.labels, order }, null, 2) + "\n", "utf-8");
               res.statusCode = 200;
               res.setHeader("Content-Type", "application/json");
               res.end(JSON.stringify({ ok: true }));
