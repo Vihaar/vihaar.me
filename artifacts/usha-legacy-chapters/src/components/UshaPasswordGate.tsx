@@ -1,7 +1,7 @@
 import { FormEvent, ReactNode, useEffect, useState } from "react";
 
 const ACCESS_KEY = "usha-access-granted-v1";
-const PASSWORD = "tiger21";
+const PASSWORD = "vallumreddy";
 
 type UshaPasswordGateProps = {
   children: ReactNode;
