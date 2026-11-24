@@ -6,6 +6,8 @@ on:
       - 'games-source.json'
       - 'games-hub/**'
       - 'scripts/*games*.mjs'
+      - 'scripts/fold-ai*.mjs'
+      - 'netlify/functions/fold-*.mjs'
       - 'netlify.toml'
       - '.github/workflows/games-hosting.yml'
   workflow_dispatch:
@@ -21,7 +23,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: node --test scripts/games-build.test.mjs
+      - run: node --test scripts/games-build.test.mjs scripts/fold-ai.test.mjs
       - run: node scripts/build-games.mjs
       - uses: actions/upload-artifact@v4
         with:
