@@ -1,6 +1,6 @@
 {
   "repository": "Vihaar/game",
-  "commit": "bbe79572dda28ad6615c2ad8154b11cd02399ca1",
+  "commit": "2c823f1b388a5feab040c2d5989422aeb735090b",
   "games": [
     {
       "slug": "mike",
@@ -34,7 +34,7 @@
       "slug": "the-fold",
       "directory": "games/card-roguelike",
       "title": "The Fold",
-      "description": "Walk into a folded-up library. Fight with cards. Merge two spells into something stronger.",
+      "description": "A cursed papercraft library is eating reality. Walk eight areas, dodge its keepers, and forge cards while they chase you.",
       "controls": "Keyboard + mouse",
       "status": "Playable prototype",
       "preview": "games/card-roguelike/screenshots/combat.png"
