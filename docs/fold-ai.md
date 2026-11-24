@@ -4,6 +4,10 @@ The game ships original static AI illustrations and deterministic recursive forg
 
 No external image-provider credentials were present when this was implemented. The integration is therefore **disabled in production**, and no paid inference requests were made. Mocked provider tests cover validation, response boundaries, cache reuse and the disabled path; live provider inference still requires an account.
 
+## ChatGPT image tools and API credits
+
+The bundled papercraft atlas was generated with the built-in image tool here, without an API key. Dynamic generation for players is a server API feature. [OpenAI's current eligibility guide](https://help.openai.com/en/articles/20001626-api-credits-benefit-for-eligible-chatgpt-subscriptions) says eligible Pro/Business owners can claim credits covering the Images API after linking an API organization; Plus does not include that benefit. Eligibility is separate from activation, and the server would still need an API credential and an OpenAI provider adapter. The adapter implemented below uses Cloudflare's low-cost hosted models. No subscription, billing link or payment method was changed.
+
 Configure these variables with Functions scope in the Netlify project, then redeploy:
 
 - `CLOUDFLARE_ACCOUNT_ID`: the 32-character account identifier.
