@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A few browser games we're making together. Pick a game, send it to a friend, or help build the next bit.">
+  <title>vihaar's games</title>
+  <link rel="icon" href="/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/games/style.css">
+</head>
+<body>
+  <main>
+    <header><a class="home" href="/">vihaar.me</a><a href="https://github.com/Vihaar/game">Build with us</a></header>
+    <section class="intro"><p class="scribble">a few things we're making together</p><h1>vihaar's games<span class="asterisk" aria-hidden="true">*</span></h1><p>Pick one. Send it to a friend. Tell us what broke.</p></section>
+    <section class="games" aria-label="Playable games">{{GAME_CARDS}}</section>
+    {{WORKBENCH}}
+    <footer><p>Code, art, jokes, bad ideas that become good ideas — everyone can help.</p><a href="https://github.com/Vihaar/game">Open-source on GitHub</a><a class="source" href="https://github.com/Vihaar/game/tree/{{SOURCE_COMMIT}}">Source for these builds</a></footer>
+  </main>
+</body>
+</html>

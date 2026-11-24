@@ -1,6 +1,6 @@
 # Monorepo: site lives in artifacts/vihaar-me (Vite → dist/public)
 [build]
-  command = "pnpm install && cd artifacts/usha-legacy-chapters && npm install && npm run build && cd ../.. && rm -rf artifacts/vihaar-me/public/usha && mkdir -p artifacts/vihaar-me/public/usha && cp -R artifacts/usha-legacy-chapters/dist/* artifacts/vihaar-me/public/usha/ && pnpm --filter @workspace/vihaar-me run build"
+  command = "pnpm install && cd artifacts/usha-legacy-chapters && npm install && npm run build && cd ../.. && rm -rf artifacts/vihaar-me/public/usha && mkdir -p artifacts/vihaar-me/public/usha && cp -R artifacts/usha-legacy-chapters/dist/* artifacts/vihaar-me/public/usha/ && node scripts/build-games.mjs && pnpm --filter @workspace/vihaar-me run build"
   publish = "artifacts/vihaar-me/dist/public"
 
 [build.environment]
@@ -14,6 +14,40 @@
   to = "/.netlify/functions/create-donation-session"
   status = 200
   force = true
+
+# Games are separate static apps. Existing files shadow these non-forced rules.
+# Canonical HTML bases support both entry variants; do not force slash-only redirects.
+[[redirects]]
+  from = "/games"
+  to = "/games/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/games/mike"
+  to = "/games/mike/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/games/the-fold"
+  to = "/games/the-fold/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/games/soup"
+  to = "/games/soup/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/games/elevator"
+  to = "/games/elevator/index.html"
+  status = 200
+
+# Missing game assets must not receive the portfolio's SPA HTML.
+# https://docs.netlify.com/manage/routing/redirects/redirect-options/#custom-404-page-handling
+[[redirects]]
+  from = "/games/*"
+  to = "/games/404.html"
+  status = 404
 
 # SPA: client-side routes (e.g. /fundraise2026) must serve index.html or direct loads 404
 [[redirects]]

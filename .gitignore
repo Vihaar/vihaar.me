@@ -48,6 +48,7 @@ Thumbs.db
 .cache/
 .local/
 .replit-artifact/
+.netlify/
 
 # Env (secrets, local Stripe keys)
 .env
@@ -55,5 +56,6 @@ Thumbs.db
 .env.*.local
 
 # Generated embedded subpage builds
+artifacts/vihaar-me/public/games/
 artifacts/vihaar-me/public/usha/
 artifacts/vihaar-me/public/usher/

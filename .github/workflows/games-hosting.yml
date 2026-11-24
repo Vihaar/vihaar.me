@@ -1,0 +1,29 @@
+name: Check embedded games
+
+on:
+  pull_request:
+    paths:
+      - 'games-source.json'
+      - 'games-hub/**'
+      - 'scripts/*games*.mjs'
+      - 'netlify.toml'
+      - '.github/workflows/games-hosting.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-games:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test scripts/games-build.test.mjs
+      - run: node scripts/build-games.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: embedded-games
+          path: artifacts/vihaar-me/public/games

@@ -1,0 +1,44 @@
+{
+  "repository": "Vihaar/game",
+  "commit": "92efc5a618c8a145827162c4d7394236721035bb",
+  "games": [
+    {
+      "slug": "mike",
+      "directory": "games/server-kart",
+      "title": "Server Kart",
+      "description": "Everybody drives Mike. Race the group chat, drift through the nonsense, and try not to pay the cheese tax.",
+      "controls": "Keyboard or gamepad · room codes",
+      "status": "Playable prototype",
+      "preview": "games/server-kart/public/portraits/mike.webp",
+      "notices": ["games/server-kart/LICENSE", "games/server-kart/THIRD_PARTY.md"]
+    },
+    {
+      "slug": "soup",
+      "directory": "games/soup",
+      "title": "Don't Spill the Soup",
+      "description": "One full bowl. A short walk. A very unhelpful cat. Get as much soup to the table as you can.",
+      "controls": "Mouse, touch, or keyboard",
+      "status": "Playable prototype",
+      "notices": ["games/soup/upstream/MATTER-LICENSE.txt"]
+    },
+    {
+      "slug": "elevator",
+      "directory": "games/elevator",
+      "title": "One More Person",
+      "description": "Everyone insists they can fit. Pack the passengers, mind the doorway, and see if the doors will close.",
+      "controls": "Mouse, touch, or keyboard",
+      "status": "Playable prototype",
+      "notices": ["games/elevator/upstream/MATTER-LICENSE.txt"]
+    },
+    {
+      "slug": "the-fold",
+      "directory": "games/card-roguelike",
+      "title": "The Fold",
+      "description": "Walk into a folded-up library. Fight with cards. Merge two spells into something stronger.",
+      "controls": "Keyboard + mouse",
+      "status": "Playable prototype",
+      "preview": "games/card-roguelike/screenshots/combat.png"
+    }
+  ],
+  "planned": []
+}
