@@ -1,6 +1,6 @@
 {
   "repository": "Vihaar/game",
-  "commit": "265e1b75524de62877e3bb27f595ac80beb74f98",
+  "commit": "efb082dbbcabcfac98ce0dde7b7a5142b299a2c1",
   "games": [
     {
       "slug": "mike",
@@ -37,8 +37,8 @@
       "slug": "the-fold",
       "directory": "games/card-roguelike",
       "title": "The Fold",
-      "description": "Enter knowing nothing. Follow eight chapters through a paper library, forge cards, and battle for complete understanding.",
-      "controls": "Mouse, touch, or keyboard · turn-based cards",
+      "description": "Wake with no name before a paper library. Climb eight floors, combine runes in your grimoire, and uncover what waits above.",
+      "controls": "Mouse, touch, or keyboard · turn-based rune magic",
       "status": "Playable prototype",
       "preview": "games/card-roguelike/screenshots/combat.png"
     }
