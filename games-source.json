@@ -1,6 +1,6 @@
 {
   "repository": "Vihaar/game",
-  "commit": "2c823f1b388a5feab040c2d5989422aeb735090b",
+  "commit": "265e1b75524de62877e3bb27f595ac80beb74f98",
   "games": [
     {
       "slug": "mike",
@@ -10,7 +10,10 @@
       "controls": "Keyboard or gamepad · room codes",
       "status": "Playable prototype",
       "preview": "games/server-kart/public/portraits/mike.webp",
-      "notices": ["games/server-kart/LICENSE", "games/server-kart/THIRD_PARTY.md"]
+      "notices": [
+        "games/server-kart/LICENSE",
+        "games/server-kart/THIRD_PARTY.md"
+      ]
     },
     {
       "slug": "soup",
@@ -34,8 +37,8 @@
       "slug": "the-fold",
       "directory": "games/card-roguelike",
       "title": "The Fold",
-      "description": "A cursed papercraft library is eating reality. Walk eight areas, dodge its keepers, and forge cards while they chase you.",
-      "controls": "Keyboard + mouse",
+      "description": "Enter knowing nothing. Follow eight chapters through a paper library, forge cards, and battle for complete understanding.",
+      "controls": "Mouse, touch, or keyboard · turn-based cards",
       "status": "Playable prototype",
       "preview": "games/card-roguelike/screenshots/combat.png"
     }
