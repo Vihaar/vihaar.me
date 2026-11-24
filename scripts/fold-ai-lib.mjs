@@ -35,7 +35,7 @@ export async function generateDiscovery(discovery, env, fetcher = fetch) {
     if (text(parsed.name, 48) && text(parsed.description, 180)) { name = parsed.name.trim(); description = parsed.description.trim(); }
   } catch { /* Semantic naming is optional; image generation can still succeed. */ }
   const result = await cloudflare(ART_MODEL, {
-    prompt: `Original dark fantasy spell illustration: ${name}. ${description} Ingredients: ${discovery.parents.join(', ')}. Illuminated manuscript ink engraving, tactile parchment, indigo and restrained copper and jade, centered readable silhouette, atmospheric, no typography, no frame, no real people, no trademarks.`,
+    prompt: `Original spell-card miniature: ${name}. ${description} Ingredients: ${discovery.parents.join(', ')}. Physically handmade layered papercraft diorama, folded and scored cardstock, visible paper thickness and fibers, crisp cut edges and curled strips. Elevated three-quarter tabletop view, soft directional shadows, centered strong silhouette with breathing room. Warm ivory paper ground, book-ink blue, coral, moss teal and muted violet dyed paper. All effects are cut paper. No text, frame, engraving, painting, chrome, plastic, neon glow, real people or brands.`,
     steps: 4,
   }, env, fetcher);
   if (typeof result.image !== 'string' || result.image.length > 12_000_000 || !/^[A-Za-z0-9+/=]+$/.test(result.image)) throw new Error('Invalid image response.');
