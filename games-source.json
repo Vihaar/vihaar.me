@@ -1,6 +1,6 @@
 {
   "repository": "Vihaar/game",
-  "commit": "a29155666c75684e8549a7b687e82a4f60e23ec4",
+  "commit": "586221eaf3a892908830b36d46e2d129931b6aa7",
   "games": [
     {
       "slug": "mike",
@@ -37,7 +37,7 @@
       "slug": "the-fold",
       "directory": "games/card-roguelike",
       "title": "The Fold",
-      "description": "Wake with no name before a paper library. Explore three increasingly abandoned floors, combine spells, and face what the library learns from you.",
+      "description": "Enter a hand-drawn library as a nameless apprentice. Invent spells for 2 HP, choose relic paths, and face guardians that learn your magic.",
       "controls": "Mouse, touch, or keyboard · turn-based rune magic",
       "status": "Playable prototype",
       "preview": "games/card-roguelike/screenshots/walkthrough-prototype.png"
