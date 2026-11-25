@@ -1,13 +1,91 @@
 {
   "repository": "Vihaar/game",
-  "commit": "586221eaf3a892908830b36d46e2d129931b6aa7",
+  "commit": "17442d529b5599d67fd6d8dc1bfb1d05f5ecc1c8",
   "games": [
+    {
+      "slug": "one-brain-cell",
+      "directory": "games/one-brain-cell",
+      "title": "One Brain Cell",
+      "description": "Three departments control one Mike and an oversized sofa. Share a keyboard, fill missing roles with AI, or invite friends into an online room.",
+      "controls": "Keyboard or touch; solo, local or online rooms",
+      "status": "Playable prototype",
+      "preview": "games/one-brain-cell/screenshots/preview.png",
+      "notices": [
+        "games/one-brain-cell/LICENSE",
+        "games/one-brain-cell/THIRD_PARTY.md"
+      ]
+    },
+    {
+      "slug": "trust-me-bro",
+      "directory": "games/trust-me-bro",
+      "title": "Trust Me, Bro",
+      "description": "One walker, one overconfident navigator, and three increasingly unfortunate compasses. Follow the radio or pass the map to a friend.",
+      "controls": "Keyboard or touch; solo or same-device co-op",
+      "status": "Playable prototype",
+      "preview": "games/trust-me-bro/screenshots/preview.png",
+      "notices": [
+        "games/trust-me-bro/LICENSE",
+        "games/trust-me-bro/THIRD_PARTY.md"
+      ]
+    },
+    {
+      "slug": "friend-patch-notes",
+      "directory": "games/friend-patch-notes",
+      "title": "Friend Patch Notes",
+      "description": "Write absurd buffs for Mike, Torin, Jonah and Grant, then watch a five-round battle against their patched clones.",
+      "controls": "Mouse, touch or keyboard; solo",
+      "status": "Playable prototype",
+      "preview": "games/friend-patch-notes/screenshots/preview.png",
+      "notices": [
+        "games/friend-patch-notes/LICENSE",
+        "games/friend-patch-notes/THIRD_PARTY.md"
+      ]
+    },
+    {
+      "slug": "airport-impostor",
+      "directory": "games/airport-impostor",
+      "title": "Airport Impostor",
+      "description": "One impostor among thirty travelers. Complete secret errands or watch the crowd and make your three inspections count.",
+      "controls": "Keyboard, mouse or touch; solo or local two-player",
+      "status": "Playable prototype",
+      "preview": "games/airport-impostor/screenshots/preview.png",
+      "notices": [
+        "games/airport-impostor/LICENSE",
+        "games/airport-impostor/THIRD_PARTY.md"
+      ]
+    },
+    {
+      "slug": "group-chat-court",
+      "directory": "games/group-chat-court",
+      "title": "Group Chat Court",
+      "description": "Present ridiculous evidence, make your argument, and trust a deeply unqualified friend jury. Three cases. Zero legal authority.",
+      "controls": "Mouse, touch or keyboard; solo or same-device hotseat",
+      "status": "Playable prototype",
+      "preview": "games/group-chat-court/screenshots/preview.png",
+      "notices": [
+        "games/group-chat-court/LICENSE",
+        "games/group-chat-court/THIRD_PARTY.md"
+      ]
+    },
+    {
+      "slug": "friend-market",
+      "directory": "games/friend-market",
+      "title": "Friend Market",
+      "description": "Buy a goofy friend roster, stack their talents, and survive five market closes. All money is imaginary.",
+      "controls": "Mouse, touch or keyboard; solo",
+      "status": "Playable prototype",
+      "preview": "games/friend-market/screenshots/preview.png",
+      "notices": [
+        "games/friend-market/LICENSE",
+        "games/friend-market/THIRD_PARTY.md"
+      ]
+    },
     {
       "slug": "mike",
       "directory": "games/server-kart",
       "title": "Server Kart",
       "description": "Everybody drives Mike. Race the group chat, drift through the nonsense, and try not to pay the cheese tax.",
-      "controls": "Keyboard or gamepad · room codes",
+      "controls": "Keyboard or gamepad \u00b7 room codes",
       "status": "Playable prototype",
       "preview": "games/server-kart/public/portraits/mike.webp",
       "notices": [
@@ -22,7 +100,9 @@
       "description": "One full bowl. A short walk. A very unhelpful cat. Get as much soup to the table as you can.",
       "controls": "Mouse, touch, or keyboard",
       "status": "Playable prototype",
-      "notices": ["games/soup/upstream/MATTER-LICENSE.txt"]
+      "notices": [
+        "games/soup/upstream/MATTER-LICENSE.txt"
+      ]
     },
     {
       "slug": "elevator",
@@ -31,14 +111,16 @@
       "description": "Everyone insists they can fit. Pack the passengers, mind the doorway, and see if the doors will close.",
       "controls": "Mouse, touch, or keyboard",
       "status": "Playable prototype",
-      "notices": ["games/elevator/upstream/MATTER-LICENSE.txt"]
+      "notices": [
+        "games/elevator/upstream/MATTER-LICENSE.txt"
+      ]
     },
     {
       "slug": "the-fold",
       "directory": "games/card-roguelike",
       "title": "The Fold",
       "description": "Enter a hand-drawn library as a nameless apprentice. Invent spells for 2 HP, choose relic paths, and face guardians that learn your magic.",
-      "controls": "Mouse, touch, or keyboard · turn-based rune magic",
+      "controls": "Mouse, touch, or keyboard \u00b7 turn-based rune magic",
       "status": "Playable prototype",
       "preview": "games/card-roguelike/screenshots/walkthrough-prototype.png"
     }
